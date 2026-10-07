@@ -72,27 +72,39 @@ except FileNotFoundError:
     st.write("Không tìm thấy file nhạc nền.")
 import streamlit as st
 import base64
+import streamlit as st
+import base64
 
-# Hàm để đặt hình nền
-def set_bg_from_local(image_file):
-    with open(image_file, "rb") as f:
-        encoded_string = base64.b64encode(f.read())
+# Hàm để chèn hình nền từ file ảnh cục bộ
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
     st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("data:image/png;base64,{encoded_string.decode()}");
+        background-image: url(data:image/{"jpg"};base64,{encoded_string.decode()});
         background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    
+    /* Làm cho các khung nội dung hơi trong suốt để dễ đọc chữ trên nền */
+    .st-emotion-cache-1wmy9hl, .st-emotion-cache-18ni7ap {{
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        padding: 20px;
+        border-radius: 10px;
     }}
     </style>
     """,
     unsafe_allow_html=True
     )
 
-# Gọi hàm và truyền tên file ảnh bạn đã tải lên GitHub (ví dụ: 'background.png')
-# Đảm bảo file ảnh nằm cùng thư mục với file app.py
+# Gọi hàm và truyền tên file ảnh
 try:
-    set_bg_from_local('background.png') # Thay 'background.png' bằng tên file thật của bạn
-except FileNotFoundError:
-    st.warning("Không tìm thấy file hình nền. Hãy đảm bảo bạn đã tải ảnh lên GitHub đúng thư mục.")
+    add_bg_from_local('image_2aa562.jpg') 
+except Exception as e:
+    st.write(f"Không thể tải hình nền: {e}")
+
 
