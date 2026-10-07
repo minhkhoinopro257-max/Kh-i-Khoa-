@@ -189,7 +189,7 @@ import base64
 # ===== NHẠC NỀN =====
 def nhac_nen():
     try:
-        with open("nhac.mp3", "rb") as f:
+        with open("xương rồng (intro).mp3", "rb") as f:
             audio_data = base64.b64encode(f.read()).decode()
 
         st.markdown(
