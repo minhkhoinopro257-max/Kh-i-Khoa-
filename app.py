@@ -4,9 +4,9 @@ import base64
 
 st.set_page_config(page_title="Game Giải Toán Cấp 2", page_icon="📐", layout="centered")
 
-# --- NẠP HÌNH NỀN VÀ NHẠC NỀN TỪ TỆP CÓ SẴN TRÊN GITHUB ---
+# --- NẠP HÌNH NỀN VÀ TỐI ƯU GIAO DIỆN CỰC DỄ ĐỌC ---
 def load_media():
-    # 1. Cấu hình hình nền OIP.jpg
+    # 1. Cấu hình hình nền OIP.jpg và khung chứa màu tối
     try:
         with open("OIP.jpg", "rb") as img_file:
             img_b64 = base64.b64encode(img_file.read()).decode()
@@ -19,12 +19,23 @@ def load_media():
                     background-position: center;
                     background-attachment: fixed;
                 }}
-                /* Tạo phông nền trắng mờ giúp chữ dễ đọc hơn trên hình ảnh */
+                /* Tạo phông nền tối đục để chữ màu trắng nổi bật hoàn toàn */
                 .stMainBlockContainer {{
-                    background-color: rgba(255, 255, 255, 0.88);
-                    padding: 2rem;
-                    border-radius: 15px;
-                    margin-top: 1rem;
+                    background-color: rgba(15, 23, 42, 0.92) !important;
+                    padding: 2.5rem !important;
+                    border-radius: 20px !important;
+                    margin-top: 2rem !important;
+                    border: 2px solid rgba(255, 255, 255, 0.1);
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                }}
+                /* Ép toàn bộ chữ thường, tiêu đề, label sang màu trắng rõ nét */
+                h1, h2, h3, p, span, label {{
+                    color: #FFFFFF !important;
+                }}
+                /* Chỉnh màu cho câu hỏi nổi bật */
+                .stSubheader h3 {{
+                    color: #38BDF8 !important;
+                    font-weight: 700;
                 }}
                 </style>
                 """,
@@ -46,7 +57,7 @@ def load_media():
     except FileNotFoundError:
         pass
 
-# Gọi hàm cài đặt giao diện
+# Gọi hàm nạp giao diện
 load_media()
 
 # --- NỘI DUNG GAME GIẢI TOÁN CẤP 2 ---
