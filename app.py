@@ -96,5 +96,3 @@ try:
 except FileNotFoundError:
     st.warning("Không tìm thấy file hình nền. Hãy đảm bảo bạn đã tải ảnh lên GitHub đúng thư mục.")
 
-# Tiếp tục các phần code game của bạn ở dưới...
-st.title("Bé Giỏi Toán - Khôi Khoa L")
