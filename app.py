@@ -23,7 +23,7 @@ def load_media():
                     background-color: rgba(15, 23, 42, 0.92) !important;
                     padding: 2.5rem !important;
                     border-radius: 20px !important;
-                    margin-top: 2rem !important;
+                    margin-top: 1.5rem !important;
                     border: 2px solid rgba(255, 255, 255, 0.1);
                     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
                 }}
@@ -41,7 +41,7 @@ def load_media():
     except FileNotFoundError:
         st.warning("⚠️ Không tìm thấy file hình nền 'OIP.jpg' trên GitHub.")
 
-    # 2. Cấu hình nhạc nền (thử tìm file nhac.mp3 hoặc xương rồng (intro).mp3)
+    # 2. Cấu hình nhạc nền
     audio_file_name = None
     for name in ["nhac.mp3", "xương rồng (intro).mp3", "xuong rong (intro).mp3"]:
         try:
@@ -52,23 +52,12 @@ def load_media():
             continue
 
     if audio_file_name:
-        try:
-            with open(audio_file_name, "rb") as audio_file:
-                audio_b64 = base64.b64encode(audio_file.read()).decode()
-                audio_html = f"""
-                    <audio autoplay loop style="display:none;">
-                        <source src="data:audio/mp3;base64,{audio_b64}" type="audio/mp3">
-                    </audio>
-                """
-                st.markdown(audio_html, unsafe_allow_html=True)
-            
-            with st.sidebar:
-                st.write("🎵 **Nhạc Nền Game**")
-                st.audio(audio_file_name, loop=True)
-        except Exception:
-            pass
+        with st.sidebar:
+            st.write("🎵 **TRÌNH PHÁT NHẠC NỀN**")
+            st.audio(audio_file_name, loop=True)
+            st.info("💡 Nếu chưa nghe thấy nhạc, hãy bấm nút ▶️ Play ở thanh phát nhạc trên để nghe nhé!")
     else:
-        st.sidebar.warning("⚠️ Chưa phát được nhạc: Hãy đảm bảo file nhạc trên GitHub tên là 'nhac.mp3'.")
+        st.sidebar.error("❌ Không tìm thấy file nhạc (.mp3) nào trong kho GitHub! Hãy đảm bảo bạn đã tải file 'nhac.mp3' lên.")
 
 load_media()
 
@@ -164,28 +153,3 @@ st.number_input(
 if st.button("🔄 Bỏ qua / Đổi câu hỏi khác"):
     next_question()
     st.rerun()
-import base64
-
-# Đọc file nhạc
-audio_file = "xương rồng (intro).mp3"
-
-try:
-    with open(audio_file, "rb") as f:
-        audio_bytes = f.read()
-        audio_base64 = base64.b64encode(audio_bytes).decode()
-        
-        # Sử dụng HTML để nhúng nhạc, tự động phát và lặp lại
-        audio_html = f"""
-            <audio autoplay loop>
-                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-            </audio>
-        """
-        st.markdown(audio_html, unsafe_allow_html=True)
-except FileNotFoundError:
-    st.write("Không tìm thấy file nhạc nền.")
-import streamlit as st
-import base64
-    except:
-        pass
-
-nhac_nen()
