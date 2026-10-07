@@ -70,3 +70,31 @@ try:
         st.markdown(audio_html, unsafe_allow_html=True)
 except FileNotFoundError:
     st.write("Không tìm thấy file nhạc nền.")
+import streamlit as st
+import base64
+
+# Hàm để đặt hình nền
+def set_bg_from_local(image_file):
+    with open(image_file, "rb") as f:
+        encoded_string = base64.b64encode(f.read())
+    st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string.decode()}");
+        background-size: cover;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+    )
+
+# Gọi hàm và truyền tên file ảnh bạn đã tải lên GitHub (ví dụ: 'background.png')
+# Đảm bảo file ảnh nằm cùng thư mục với file app.py
+try:
+    set_bg_from_local('background.png') # Thay 'background.png' bằng tên file thật của bạn
+except FileNotFoundError:
+    st.warning("Không tìm thấy file hình nền. Hãy đảm bảo bạn đã tải ảnh lên GitHub đúng thư mục.")
+
+# Tiếp tục các phần code game của bạn ở dưới...
+st.title("Bé Giỏi Toán - Khôi Khoa L")
