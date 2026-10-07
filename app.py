@@ -1,9 +1,56 @@
 import streamlit as st
 import random
+import base64
 
-st.set_page_config(page_title="Game Giải Toán Cấp 2 - Khôi Khoa L", page_icon="📐", layout="centered")
+st.set_page_config(page_title="Game Giải Toán Cấp 2", page_icon="📐", layout="centered")
 
-st.title("📐 GAME GIẢI TOÁN CẤP 2 - KHÔI KHOA L 📐")
+# --- NẠP HÌNH NỀN VÀ NHẠC NỀN TỪ TỆP CÓ SẴN TRÊN GITHUB ---
+def load_media():
+    # 1. Cấu hình hình nền OIP.jpg
+    try:
+        with open("OIP.jpg", "rb") as img_file:
+            img_b64 = base64.b64encode(img_file.read()).decode()
+            st.markdown(
+                f"""
+                <style>
+                .stApp {{
+                    background-image: url("data:image/jpeg;base64,{img_b64}");
+                    background-size: cover;
+                    background-position: center;
+                    background-attachment: fixed;
+                }}
+                /* Tạo phông nền trắng mờ giúp chữ dễ đọc hơn trên hình ảnh */
+                .stMainBlockContainer {{
+                    background-color: rgba(255, 255, 255, 0.88);
+                    padding: 2rem;
+                    border-radius: 15px;
+                    margin-top: 1rem;
+                }}
+                </style>
+                """,
+                unsafe_allow_html=True
+            )
+    except FileNotFoundError:
+        pass
+
+    # 2. Cấu hình nhạc nền xương rồng (intro).mp3
+    try:
+        with open("xương rồng (intro).mp3", "rb") as audio_file:
+            audio_b64 = base64.b64encode(audio_file.read()).decode()
+            audio_html = f"""
+                <audio autoplay loop style="display:none;">
+                    <source src="data:audio/mp3;base64,{audio_b64}" type="audio/mp3">
+                </audio>
+            """
+            st.markdown(audio_html, unsafe_allow_html=True)
+    except FileNotFoundError:
+        pass
+
+# Gọi hàm cài đặt giao diện
+load_media()
+
+# --- NỘI DUNG GAME GIẢI TOÁN CẤP 2 ---
+st.title("📐 GAME GIẢI TOÁN CẤP 2 📐")
 st.write("Thử thách tư duy với Căn bậc hai, Phương trình, Định lý Pythagoras và Lũy thừa!")
 
 # Khởi tạo trạng thái game
@@ -16,15 +63,13 @@ def generate_cap2_question():
     q_type = random.choice(["can_bac_hai", "phuong_trinh", "pitago", "luy_thua"])
     
     if q_type == "can_bac_hai":
-        # Tìm x biết sqrt(x + a) = b => x = b^2 - a
         b = random.randint(3, 12)
         a = random.randint(1, 20)
         ans = b**2 - a
-        question_text = f"Tìm x biết:  √(x + {a}) = {b}"
-        hint = f"Bình phương 2 vế ta được: x + {a} = {b}² = {b**2}  ➔  x = {b**2} - {a}"
+        question_text = f"Tìm x biết: √(x + {a}) = {b}"
+        hint = f"Bình phương 2 vế: x + {a} = {b}² = {b**2} ➔ x = {b**2} - {a}"
         
     elif q_type == "phuong_trinh":
-        # Phương trình bậc hai dạng x² - Sx + P = 0
         x1 = random.randint(2, 9)
         x2 = random.randint(2, 9)
         S = x1 + x2
@@ -34,14 +79,13 @@ def generate_cap2_question():
         hint = f"Phân tích thành nhân tử: (x - {x1})(x - {x2}) = 0 ➔ Các nghiệm là {x1} và {x2}"
         
     elif q_type == "pitago":
-        # Bộ ba số Pitago nguyên
         triples = [(3, 4, 5), (6, 8, 10), (5, 12, 13), (9, 12, 15), (8, 15, 17), (12, 16, 20)]
         a, b, c = random.choice(triples)
         ans = c
-        question_text = f"Cho tam giác vuông có 2 cạnh góc vuông a = {a} cm, b = {b} cm. Tính độ dài cạnh huyền c (cm):"
+        question_text = f"Cho tam giác vuông có 2 cạnh góc vuông a = {a} cm, b = {b} cm. Tính cạnh huyền c (cm):"
         hint = f"Định lý Pitago: c² = a² + b² = {a}² + {b}² = {a**2 + b**2} ➔ c = √({a**2 + b**2})"
         
-    else:  # Lũy thừa & giá trị biểu thức
+    else:
         base = random.randint(2, 5)
         exp = random.randint(2, 4)
         add = random.randint(10, 50)
@@ -51,7 +95,6 @@ def generate_cap2_question():
         
     return question_text, ans, hint
 
-# Khởi tạo câu hỏi đầu tiên
 if "q_text" not in st.session_state:
     st.session_state.q_text, st.session_state.ans, st.session_state.hint = generate_cap2_question()
 
@@ -74,7 +117,6 @@ def check_answer():
     
     next_question()
 
-# Bảng điểm & Chuỗi thắng
 col1, col2 = st.columns(2)
 with col1:
     st.metric("🏆 Tổng điểm", f"{st.session_state.score} điểm")
@@ -83,14 +125,11 @@ with col2:
 
 st.divider()
 
-# Khối hiển thị câu hỏi
 st.subheader("❓ " + st.session_state.q_text)
 
-# Nút mở gợi ý
 with st.expander("💡 Xem gợi ý cách giải"):
     st.write(st.session_state.hint)
 
-# Ô nhập kết quả
 st.number_input(
     "Nhập kết quả (số nguyên) rồi ấn Enter:",
     key="user_input",
