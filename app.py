@@ -152,3 +152,22 @@ st.number_input(
 if st.button("🔄 Bỏ qua / Đổi câu hỏi khác"):
     next_question()
     st.rerun()
+import base64
+
+# Đọc file nhạc
+audio_file = "xương rồng (intro).mp3"
+
+try:
+    with open(audio_file, "rb") as f:
+        audio_bytes = f.read()
+        audio_base64 = base64.b64encode(audio_bytes).decode()
+        
+        # Sử dụng HTML để nhúng nhạc, tự động phát và lặp lại
+        audio_html = f"""
+            <audio autoplay loop>
+                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+            </audio>
+        """
+        st.markdown(audio_html, unsafe_allow_html=True)
+except FileNotFoundError:
+    st.write("Không tìm thấy file nhạc nền.")
