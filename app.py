@@ -183,3 +183,24 @@ try:
         st.markdown(audio_html, unsafe_allow_html=True)
 except FileNotFoundError:
     st.write("Không tìm thấy file nhạc nền.")
+import streamlit as st
+import base64
+
+# ===== NHẠC NỀN =====
+def nhac_nen():
+    try:
+        with open("nhac.mp3", "rb") as f:
+            audio_data = base64.b64encode(f.read()).decode()
+
+        st.markdown(
+            f"""
+            <audio autoplay loop>
+                <source src="data:audio/mp3;base64,{audio_data}" type="audio/mp3">
+            </audio>
+            """,
+            unsafe_allow_html=True
+        )
+    except:
+        pass
+
+nhac_nen()
