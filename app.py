@@ -281,3 +281,58 @@ else:
         st.session_state.answered = False
         st.session_state.finished = False
         st.rerun()
+
+import os
+import base64
+import streamlit as st
+import streamlit.components.v1 as components
+
+audio_file = "nhac_nen.m4a"
+
+if os.path.exists(audio_file):
+    with open(audio_file, "rb") as f:
+        audio_base64 = base64.b64encode(f.read()).decode()
+
+    components.html(
+        f"""
+        <audio autoplay loop controls>
+            <source
+                src="data:audio/mp4;base64,{audio_base64}"
+                type="audio/mp4">
+            Trình duyệt không hỗ trợ phát âm thanh.
+        </audio>
+        """,
+        height=65
+    )
+else:
+    st.warning("Chưa tìm thấy file nhac_nen.m4a!")
+
+import base64
+import streamlit as st
+
+def set_background(image_file):
+    with open(image_file, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background:
+                linear-gradient(
+                    rgba(10, 18, 35, 0.72),
+                    rgba(10, 18, 35, 0.82)
+                ),
+                url("data:image/jpeg;base64,{encoded}");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+set_background("OIP.jpg")
