@@ -188,11 +188,11 @@ if not st.session_state.game:
     )
 
     if level == "Dễ":
-        st.info("Kiến thức cơ bản lớp 9, phương trình và tính toán.")
+        st.info("Co bản.")
     elif level == "Vừa":
-        st.info("Bài toán vận dụng, hàm số, Viète, xác suất và hình học.")
+        st.info("cũng vừa .")
     else:
-        st.warning("Bài toán nâng cao hướng tới ôn thi tuyển sinh lớp 10.")
+        st.warning("hơi khó .")
 
     st.write("📌 10 câu hỏi • Mỗi câu đúng 10 điểm.")
 
