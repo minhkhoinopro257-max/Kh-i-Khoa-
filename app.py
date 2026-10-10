@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 st.title("🎓 MATH CHALLENGE")
-st.caption("Luyện thi tuyển sinh lớp 10 môn Toán")
+st.caption("Toán Học mathematics ")
 
 st.markdown("""
 <style>
@@ -37,7 +37,7 @@ def tao_cau_hoi(level):
          "thuc_te", "bieu_thuc", "xac_suat"]
     )
 
-    # MỨC DỄ: Kiến thức cơ bản lớp 9
+    # MỨC DỄ: cơ bản
     if level == "Dễ":
 
         if dang == "ham_so":
@@ -74,7 +74,7 @@ def tao_cau_hoi(level):
         a = random.randint(1, 5)
         return f"Gieo xúc xắc cân đối. Có bao nhiêu kết quả thuận lợi để xuất hiện số {a}?", 1
 
-    # MỨC VỪA: Bài toán vận dụng
+    # MỨC VỪA: trung bình 
     if level == "Vừa":
 
         if dang == "ham_so":
@@ -116,7 +116,7 @@ def tao_cau_hoi(level):
         a = random.randint(1, 6)
         return f"Hộp có 6 thẻ đánh số từ 1 đến 6. Xác suất rút được thẻ số {a} là 1/x. Tìm x", 6
 
-    # MỨC KHÓ: VẬN DỤNG CAO TUYỂN SINH 10
+    # MỨC KHÓ: hơi bị khó 
     if dang == "ham_so":
         a = random.randint(1, 5)
         x = random.randint(-5, 5)
