@@ -1,155 +1,230 @@
-import streamlit as st
+
 import random
-import base64
+import streamlit as st
 
-st.set_page_config(page_title="Game Giải Toán Cấp 2", page_icon="📐", layout="centered")
+st.set_page_config(
+    page_title="Math Challenge",
+    page_icon="🧮",
+    layout="centered"
+)
 
-# --- NẠP HÌNH NỀN VÀ NHẠC NỀN ---
-def load_media():
-    # 1. Cấu hình hình nền OIP.jpg
-    try:
-        with open("OIP.jpg", "rb") as img_file:
-            img_b64 = base64.b64encode(img_file.read()).decode()
-            st.markdown(
-                f"""
-                <style>
-                .stApp {{
-                    background-image: url("data:image/jpeg;base64,{img_b64}");
-                    background-size: cover;
-                    background-position: center;
-                    background-attachment: fixed;
-                }}
-                .stMainBlockContainer {{
-                    background-color: rgba(15, 23, 42, 0.92) !important;
-                    padding: 2.5rem !important;
-                    border-radius: 20px !important;
-                    margin-top: 1.5rem !important;
-                    border: 2px solid rgba(255, 255, 255, 0.1);
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-                }}
-                h1, h2, h3, p, span, label {{
-                    color: #FFFFFF !important;
-                }}
-                .stSubheader h3 {{
-                    color: #38BDF8 !important;
-                    font-weight: 700;
-                }}
-                </style>
-                """,
-                unsafe_allow_html=True
-            )
-    except FileNotFoundError:
-        st.warning("⚠️ Không tìm thấy file hình nền 'OIP.jpg' trên GitHub.")
+# ==================== GIAO DIỆN ====================
 
-    # 2. Cấu hình nhạc nền
-    audio_file_name = None
-    for name in ["nhac.mp3", "xương rồng (intro).mp3", "xuong rong (intro).mp3"]:
-        try:
-            with open(name, "rb") as f:
-                audio_file_name = name
-                break
-        except FileNotFoundError:
-            continue
+st.markdown("""
+<style>
+.stApp {
+    background: linear-gradient(135deg, #101827, #182b46);
+    color: white;
+}
+h1, h2, h3, p, label {
+    color: white !important;
+}
+div.stButton > button {
+    width: 100%;
+    border-radius: 12px;
+    min-height: 45px;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    if audio_file_name:
-        with st.sidebar:
-            st.write("🎵 **TRÌNH PHÁT NHẠC NỀN**")
-            st.audio(audio_file_name, loop=True)
-            st.info("💡 Nếu chưa nghe thấy nhạc, hãy bấm nút ▶️ Play ở thanh phát nhạc trên để nghe nhé!")
-    else:
-        st.sidebar.error("❌ Không tìm thấy file nhạc (.mp3) nào trong kho GitHub! Hãy đảm bảo bạn đã tải file 'nhac.mp3' lên.")
-
-load_media()
-
-# --- NỘI DUNG GAME GIẢI TOÁN CẤP 2 ---
-st.title("📐 GAME GIẢI TOÁN CẤP 2 📐")
-st.write("Thử thách tư duy với Căn bậc hai, Phương trình, Định lý Pythagoras và Lũy thừa!")
-
-# Khởi tạo trạng thái game
-if "score" not in st.session_state:
-    st.session_state.score = 0
-if "streak" not in st.session_state:
-    st.session_state.streak = 0
-
-def generate_cap2_question():
-    q_type = random.choice(["can_bac_hai", "phuong_trinh", "pitago", "luy_thua"])
-    
-    if q_type == "can_bac_hai":
-        b = random.randint(3, 12)
-        a = random.randint(1, 20)
-        ans = b**2 - a
-        question_text = f"Tìm x biết: √(x + {a}) = {b}"
-        hint = f"Bình phương 2 vế: x + {a} = {b}² = {b**2} ➔ x = {b**2} - {a}"
-        
-    elif q_type == "phuong_trinh":
-        x1 = random.randint(2, 9)
-        x2 = random.randint(2, 9)
-        S = x1 + x2
-        P = x1 * x2
-        ans = max(x1, x2)
-        question_text = f"Cho phương trình: x² - {S}x + {P} = 0. Tìm nghiệm LỚN NHẤT của x:"
-        hint = f"Phân tích thành nhân tử: (x - {x1})(x - {x2}) = 0 ➔ Các nghiệm là {x1} và {x2}"
-        
-    elif q_type == "pitago":
-        triples = [(3, 4, 5), (6, 8, 10), (5, 12, 13), (9, 12, 15), (8, 15, 17), (12, 16, 20)]
-        a, b, c = random.choice(triples)
-        ans = c
-        question_text = f"Cho tam giác vuông có 2 cạnh góc vuông a = {a} cm, b = {b} cm. Tính cạnh huyền c (cm):"
-        hint = f"Định lý Pitago: c² = a² + b² = {a}² + {b}² = {a**2 + b**2} ➔ c = √({a**2 + b**2})"
-        
-    else:
-        base = random.randint(2, 5)
-        exp = random.randint(2, 4)
-        add = random.randint(10, 50)
-        ans = (base ** exp) + add
-        question_text = f"Tính giá trị biểu thức: {base}^{exp} + {add}"
-        hint = f"Tính lũy thừa trước: {base}^{exp} = {base**exp}, sau đó cộng với {add}"
-        
-    return question_text, ans, hint
-
-if "q_text" not in st.session_state:
-    st.session_state.q_text, st.session_state.ans, st.session_state.hint = generate_cap2_question()
-
-def next_question():
-    st.session_state.q_text, st.session_state.ans, st.session_state.hint = generate_cap2_question()
-
-def check_answer():
-    user_ans = st.session_state.user_input
-    correct = st.session_state.ans
-    
-    if user_ans == correct:
-        st.session_state.score += 20
-        st.session_state.streak += 1
-        st.toast(f"🎉 Chính xác! +20 điểm (Chuỗi đúng: {st.session_state.streak})", icon="🔥")
-        if st.session_state.streak % 3 == 0:
-            st.balloons()
-    else:
-        st.session_state.streak = 0
-        st.toast(f"❌ Chưa đúng! Đáp án chính xác là {correct}", icon="💡")
-    
-    next_question()
-
-col1, col2 = st.columns(2)
-with col1:
-    st.metric("🏆 Tổng điểm", f"{st.session_state.score} điểm")
-with col2:
-    st.metric("🔥 Chuỗi đúng liên tiếp", f"{st.session_state.streak}")
+st.title("🧮 MATH CHALLENGE")
+st.write("Thử sức với những câu hỏi toán học!")
 
 st.divider()
 
-st.subheader("❓ " + st.session_state.q_text)
+# ==================== CẤU HÌNH ====================
 
-with st.expander("💡 Xem gợi ý cách giải"):
-    st.write(st.session_state.hint)
+LEVELS = {
+    "🟢 Dễ": {
+        "min": 1,
+        "max": 20,
+        "operations": ["+", "-"]
+    },
+    "🟡 Vừa": {
+        "min": 1,
+        "max": 100,
+        "operations": ["+", "-", "*", "/"]
+    },
+    "🔴 Khó": {
+        "min": 10,
+        "max": 500,
+        "operations": ["+", "-", "*", "/"]
+    }
+}
 
-st.number_input(
-    "Nhập kết quả (số nguyên) rồi ấn Enter:",
-    key="user_input",
-    step=1,
-    value=None,
-    on_change=check_answer
-)
+TOTAL_QUESTIONS = 10
 
-if st.button("🔄 Bỏ qua / Đổi câu hỏi khác"):
-    next_question()
-    st.rerun()
+
+def create_question(level):
+    settings = LEVELS[level]
+    low = settings["min"]
+    high = settings["max"]
+    operation = random.choice(settings["operations"])
+
+    if operation == "+":
+        a = random.randint(low, high)
+        b = random.randint(low, high)
+        return f"{a} + {b}", a + b
+
+    elif operation == "-":
+        a = random.randint(low, high)
+        b = random.randint(low, high)
+        if a < b:
+            a, b = b, a
+        return f"{a} - {b}", a - b
+
+    elif operation == "*":
+        if level == "🔴 Khó":
+            a = random.randint(10, 50)
+            b = random.randint(10, 30)
+        else:
+            a = random.randint(2, high)
+            b = random.randint(2, 12)
+        return f"{a} × {b}", a * b
+
+    else:
+        # Tạo phép chia có kết quả nguyên
+        b = random.randint(2, 12 if level == "🟡 Vừa" else 30)
+        answer = random.randint(2, high)
+        a = b * answer
+        return f"{a} ÷ {b}", answer
+
+
+def start_game(level):
+    st.session_state.level = level
+    st.session_state.questions = [
+        create_question(level)
+        for _ in range(TOTAL_QUESTIONS)
+    ]
+    st.session_state.index = 0
+    st.session_state.score = 0
+    st.session_state.started = True
+    st.session_state.finished = False
+    st.session_state.feedback = None
+
+
+# ==================== KHỞI TẠO ====================
+
+if "started" not in st.session_state:
+    st.session_state.started = False
+
+if "finished" not in st.session_state:
+    st.session_state.finished = False
+
+if "feedback" not in st.session_state:
+    st.session_state.feedback = None
+
+# ==================== CHỌN CẤP ĐỘ ====================
+
+if not st.session_state.started:
+    st.subheader("🎯 Chọn cấp độ")
+
+    level = st.radio(
+        "Bạn muốn chơi ở mức nào?",
+        list(LEVELS.keys()),
+        index=0
+    )
+
+    st.markdown("""
+    - 🟢 **Dễ:** Cộng và trừ số nhỏ.
+    - 🟡 **Vừa:** Cộng, trừ, nhân và chia.
+    - 🔴 **Khó:** Số lớn và phép tính thử thách hơn.
+    """)
+
+    st.info("Mỗi lượt có 10 câu hỏi. Mỗi câu đúng được 10 điểm.")
+
+    if st.button("🚀 BẮT ĐẦU CHƠI", type="primary"):
+        start_game(level)
+        st.rerun()
+
+# ==================== ĐANG CHƠI ====================
+
+elif not st.session_state.finished:
+    index = st.session_state.index
+    questions = st.session_state.questions
+    score = st.session_state.score
+
+    st.subheader(st.session_state.level)
+
+    st.progress(index / TOTAL_QUESTIONS)
+
+    st.write(
+        f"**Câu {index + 1}/{TOTAL_QUESTIONS}**"
+    )
+    st.write(f"🏆 Điểm hiện tại: **{score}**")
+
+    # Hiển thị phản hồi câu trước
+    if st.session_state.feedback is not None:
+        correct, correct_answer = st.session_state.feedback
+
+        if correct:
+            st.success("🎉 Chính xác! Bạn làm tốt lắm!")
+        else:
+            st.error(
+                f"❌ Chưa đúng! Đáp án là {correct_answer}."
+            )
+
+    expression, answer = questions[index]
+
+    st.markdown(
+        f"<h1 style='text-align:center;'>{expression} = ?</h1>",
+        unsafe_allow_html=True
+    )
+
+    with st.form(key=f"form_{index}"):
+        user_answer = st.number_input(
+            "Nhập đáp án của bạn:",
+            step=1,
+            value=0
+        )
+
+        submitted = st.form_submit_button(
+            "✅ KIỂM TRA ĐÁP ÁN",
+            type="primary"
+        )
+
+    if submitted:
+        correct = int(user_answer) == answer
+
+        if correct:
+            st.session_state.score += 10
+
+        st.session_state.feedback = (correct, answer)
+        st.session_state.index += 1
+
+        if st.session_state.index >= TOTAL_QUESTIONS:
+            st.session_state.finished = True
+
+        st.rerun()
+
+# ==================== KẾT QUẢ ====================
+
+else:
+    score = st.session_state.score
+    level = st.session_state.level
+
+    st.balloons()
+    st.header("🎉 HOÀN THÀNH!")
+
+    st.metric("Tổng điểm", f"{score}/100")
+
+    if score == 100:
+        st.success("Xuất sắc! Bạn đã trả lời đúng tất cả!")
+    elif score >= 70:
+        st.success("Rất tốt! Hãy tiếp tục phát huy!")
+    elif score >= 40:
+        st.info("Khá tốt! Luyện tập thêm để đạt điểm cao hơn.")
+    else:
+        st.warning("Đừng nản chí! Thử lại để tiến bộ hơn nhé.")
+
+    st.write(f"📚 Cấp độ: **{level}**")
+    st.write(
+        f"✅ Số câu đúng: **{score // 10}/{TOTAL_QUESTIONS}**"
+    )
+
+    if st.button("🔄 CHƠI LẠI", type="primary"):
+        st.session_state.started = False
+        st.session_state.finished = False
+        st.session_state.feedback = None
+        st.rerun()
