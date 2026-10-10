@@ -8,223 +8,209 @@ st.set_page_config(
     layout="centered"
 )
 
-# ==================== GIAO DIỆN ====================
-
-st.markdown("""
-<style>
-.stApp {
-    background: linear-gradient(135deg, #101827, #182b46);
-    color: white;
-}
-h1, h2, h3, p, label {
-    color: white !important;
-}
-div.stButton > button {
-    width: 100%;
-    border-radius: 12px;
-    min-height: 45px;
-    font-weight: bold;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.title("🧮 MATH CHALLENGE")
-st.write("Thử sức với những câu hỏi toán học!")
+st.write("Chinh phục thử thách Toán học qua 3 cấp độ!")
 
-st.divider()
+LEVELS = [
+    "🟢 Cấp 1 - Toán tiểu học",
+    "🔵 Cấp 2 - Toán THCS",
+    "🔴 Cấp 2 nâng cao"
+]
 
-# ==================== CẤU HÌNH ====================
-
-LEVELS = {
-    "🟢 Dễ": {
-        "min": 1,
-        "max": 20,
-        "operations": ["+", "-"]
-    },
-    "🟡 Vừa": {
-        "min": 1,
-        "max": 100,
-        "operations": ["+", "-", "*", "/"]
-    },
-    "🔴 Khó": {
-        "min": 10,
-        "max": 500,
-        "operations": ["+", "-", "*", "/"]
-    }
-}
-
-TOTAL_QUESTIONS = 10
+if "game" not in st.session_state:
+    st.session_state.game = False
 
 
-def create_question(level):
-    settings = LEVELS[level]
-    low = settings["min"]
-    high = settings["max"]
-    operation = random.choice(settings["operations"])
+def tao_cau_hoi(level):
+    # CẤP 1: TOÁN TIỂU HỌC
+    if level == LEVELS[0]:
+        dang = random.choice(["cong", "tru", "nhan", "chia"])
 
-    if operation == "+":
-        a = random.randint(low, high)
-        b = random.randint(low, high)
-        return f"{a} + {b}", a + b
+        if dang == "cong":
+            a = random.randint(10, 999)
+            b = random.randint(10, 999)
+            return f"{a} + {b} = ?", a + b
 
-    elif operation == "-":
-        a = random.randint(low, high)
-        b = random.randint(low, high)
-        if a < b:
-            a, b = b, a
-        return f"{a} - {b}", a - b
+        if dang == "tru":
+            a = random.randint(100, 999)
+            b = random.randint(10, a)
+            return f"{a} - {b} = ?", a - b
 
-    elif operation == "*":
-        if level == "🔴 Khó":
-            a = random.randint(10, 50)
-            b = random.randint(10, 30)
-        else:
-            a = random.randint(2, high)
+        if dang == "nhan":
+            a = random.randint(2, 99)
             b = random.randint(2, 12)
-        return f"{a} × {b}", a * b
+            return f"{a} × {b} = ?", a * b
 
+        b = random.randint(2, 12)
+        kq = random.randint(2, 100)
+        return f"{b * kq} ÷ {b} = ?", kq
+
+    # CẤP 2: TOÁN THCS
+    elif level == LEVELS[1]:
+        dang = random.choice([
+            "phuong_trinh",
+            "luy_thua",
+            "can_bac_hai",
+            "phan_so",
+            "hang_dang_thuc"
+        ])
+
+        if dang == "phuong_trinh":
+            x = random.randint(-10, 10)
+            a = random.randint(2, 9)
+            b = random.randint(-20, 20)
+            c = a * x + b
+            return f"Giải: {a}x + ({b}) = {c}. Tìm x", x
+
+        if dang == "luy_thua":
+            a = random.randint(2, 10)
+            b = random.randint(2, 4)
+            return f"Tính {a}^{b}", a ** b
+
+        if dang == "can_bac_hai":
+            a = random.randint(1, 20)
+            return f"Tính √{a*a}", a
+
+        if dang == "phan_so":
+            a = random.randint(1, 10)
+            b = random.randint(2, 10)
+            c = random.randint(1, 10)
+            d = random.randint(2, 10)
+            return (
+                f"Tính {a}/{b} + {c}/{d} (làm tròn 2 chữ số)",
+                round(a / b + c / d, 2)
+            )
+
+        a = random.randint(2, 12)
+        return f"Tính ({a} + 3)² - {a}²", 6 * a + 9
+
+    # CẤP 2 NÂNG CAO
     else:
-        # Tạo phép chia có kết quả nguyên
-        b = random.randint(2, 12 if level == "🟡 Vừa" else 30)
-        answer = random.randint(2, high)
-        a = b * answer
-        return f"{a} ÷ {b}", answer
+        dang = random.choice([
+            "he_phuong_trinh",
+            "phuong_trinh_bac_hai",
+            "phan_tich",
+            "can_thuc",
+            "ham_so"
+        ])
+
+        if dang == "he_phuong_trinh":
+            x = random.randint(-5, 5)
+            y = random.randint(-5, 5)
+            a = x + y
+            b = x - y
+            return (
+                f"Hệ: x + y = {a}; x - y = {b}. Tính x",
+                x
+            )
+
+        if dang == "phuong_trinh_bac_hai":
+            x = random.randint(-10, 10)
+            r = random.randint(-10, 10)
+            # Nghiệm của x² + bx + c = 0 gồm x và r
+            b = -(x + r)
+            c = x * r
+            return (
+                f"Tìm nghiệm lớn hơn hoặc bằng nghiệm kia của "
+                f"t² + ({b})t + ({c}) = 0 (nhập nghiệm lớn hơn)",
+                max(x, r)
+            )
+
+        if dang == "phan_tich":
+            a = random.randint(2, 12)
+            return f"Giải: x² - {a*a} = 0. Nhập nghiệm dương x", a
+
+        if dang == "can_thuc":
+            a = random.randint(2, 15)
+            return f"Tính √({a*a} + {2*a + 1})", a + 1
+
+        a = random.randint(2, 10)
+        return f"Cho y = 2x + 3. Tính y khi x = {a}", 2 * a + 3
 
 
-def start_game(level):
+def bat_dau(level):
     st.session_state.level = level
     st.session_state.questions = [
-        create_question(level)
-        for _ in range(TOTAL_QUESTIONS)
+        tao_cau_hoi(level) for _ in range(10)
     ]
     st.session_state.index = 0
     st.session_state.score = 0
-    st.session_state.started = True
-    st.session_state.finished = False
+    st.session_state.game = True
+    st.session_state.done = False
     st.session_state.feedback = None
 
 
-# ==================== KHỞI TẠO ====================
-
-if "started" not in st.session_state:
-    st.session_state.started = False
-
-if "finished" not in st.session_state:
-    st.session_state.finished = False
-
-if "feedback" not in st.session_state:
-    st.session_state.feedback = None
-
-# ==================== CHỌN CẤP ĐỘ ====================
-
-if not st.session_state.started:
+if not st.session_state.game:
     st.subheader("🎯 Chọn cấp độ")
 
     level = st.radio(
-        "Bạn muốn chơi ở mức nào?",
-        list(LEVELS.keys()),
-        index=0
+        "Bạn muốn thử sức với:",
+        LEVELS
     )
 
     st.markdown("""
-    - 🟢 **Dễ:** Cộng và trừ số nhỏ.
-    - 🟡 **Vừa:** Cộng, trừ, nhân và chia.
-    - 🔴 **Khó:** Số lớn và phép tính thử thách hơn.
+    **🟢 Cấp 1:** Cộng, trừ, nhân, chia và tính toán cơ bản.
+
+    **🔵 Cấp 2:** Phương trình, lũy thừa, căn bậc hai,
+    phân số và hằng đẳng thức.
+
+    **🔴 Cấp 2 nâng cao:** Hệ phương trình, phương trình
+    bậc hai, phân tích đa thức và hàm số.
     """)
 
-    st.info("Mỗi lượt có 10 câu hỏi. Mỗi câu đúng được 10 điểm.")
-
-    if st.button("🚀 BẮT ĐẦU CHƠI", type="primary"):
-        start_game(level)
+    if st.button("🚀 BẮT ĐẦU", type="primary"):
+        bat_dau(level)
         st.rerun()
 
-# ==================== ĐANG CHƠI ====================
-
-elif not st.session_state.finished:
-    index = st.session_state.index
-    questions = st.session_state.questions
-    score = st.session_state.score
+elif not st.session_state.done:
+    i = st.session_state.index
+    cau, dap_an = st.session_state.questions[i]
 
     st.subheader(st.session_state.level)
+    st.progress(i / 10)
+    st.write(f"Câu {i + 1}/10")
+    st.write(f"🏆 Điểm: {st.session_state.score}/100")
+    st.markdown(f"### {cau}")
 
-    st.progress(index / TOTAL_QUESTIONS)
-
-    st.write(
-        f"**Câu {index + 1}/{TOTAL_QUESTIONS}**"
-    )
-    st.write(f"🏆 Điểm hiện tại: **{score}**")
-
-    # Hiển thị phản hồi câu trước
-    if st.session_state.feedback is not None:
-        correct, correct_answer = st.session_state.feedback
-
-        if correct:
-            st.success("🎉 Chính xác! Bạn làm tốt lắm!")
-        else:
-            st.error(
-                f"❌ Chưa đúng! Đáp án là {correct_answer}."
-            )
-
-    expression, answer = questions[index]
-
-    st.markdown(
-        f"<h1 style='text-align:center;'>{expression} = ?</h1>",
-        unsafe_allow_html=True
-    )
-
-    with st.form(key=f"form_{index}"):
-        user_answer = st.number_input(
-            "Nhập đáp án của bạn:",
-            step=1,
-            value=0
+    with st.form(f"answer_{i}"):
+        tra_loi = st.number_input(
+            "Nhập đáp án:",
+            value=0.0,
+            step=1.0
         )
+        gui = st.form_submit_button("Kiểm tra đáp án")
 
-        submitted = st.form_submit_button(
-            "✅ KIỂM TRA ĐÁP ÁN",
-            type="primary"
-        )
+    if gui:
+        dung = abs(float(tra_loi) - float(dap_an)) < 0.011
 
-    if submitted:
-        correct = int(user_answer) == answer
-
-        if correct:
+        if dung:
             st.session_state.score += 10
+            st.session_state.feedback = "correct"
+        else:
+            st.session_state.feedback = f"wrong:{dap_an}"
 
-        st.session_state.feedback = (correct, answer)
         st.session_state.index += 1
 
-        if st.session_state.index >= TOTAL_QUESTIONS:
-            st.session_state.finished = True
+        if st.session_state.index == 10:
+            st.session_state.done = True
 
         st.rerun()
 
-# ==================== KẾT QUẢ ====================
-
 else:
-    score = st.session_state.score
-    level = st.session_state.level
-
     st.balloons()
-    st.header("🎉 HOÀN THÀNH!")
+    st.header("🎉 KẾT QUẢ")
+    st.metric("Điểm của bạn", f"{st.session_state.score}/100")
+    st.write(f"Cấp độ: {st.session_state.level}")
+    st.write(f"Số câu đúng: {st.session_state.score // 10}/10")
 
-    st.metric("Tổng điểm", f"{score}/100")
-
-    if score == 100:
-        st.success("Xuất sắc! Bạn đã trả lời đúng tất cả!")
-    elif score >= 70:
-        st.success("Rất tốt! Hãy tiếp tục phát huy!")
-    elif score >= 40:
-        st.info("Khá tốt! Luyện tập thêm để đạt điểm cao hơn.")
+    if st.session_state.score == 100:
+        st.success("Xuất sắc! Bạn đã hoàn thành hoàn hảo!")
+    elif st.session_state.score >= 70:
+        st.success("Làm tốt lắm! Hãy tiếp tục cố gắng.")
     else:
-        st.warning("Đừng nản chí! Thử lại để tiến bộ hơn nhé.")
+        st.info("Hãy luyện tập thêm và thử lại nhé!")
 
-    st.write(f"📚 Cấp độ: **{level}**")
-    st.write(
-        f"✅ Số câu đúng: **{score // 10}/{TOTAL_QUESTIONS}**"
-    )
-
-    if st.button("🔄 CHƠI LẠI", type="primary"):
-        st.session_state.started = False
-        st.session_state.finished = False
-        st.session_state.feedback = None
+    if st.button("🔄 CHƠI LẠI"):
+        st.session_state.game = False
+        st.session_state.done = False
         st.rerun()
