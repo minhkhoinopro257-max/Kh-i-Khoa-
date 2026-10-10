@@ -9,154 +9,133 @@ st.set_page_config(
 )
 
 st.title("🧮 MATH CHALLENGE")
-st.write("Chinh phục thử thách Toán học qua 3 cấp độ!")
+st.write("Vượt qua thử thách toán học!")
 
-LEVELS = [
-    "🟢 Cấp 1 - Toán tiểu học",
-    "🔵 Cấp 2 - Toán THCS",
-    "🔴 Cấp 2 nâng cao"
-]
+st.markdown("""
+<style>
+.stApp {
+    background: linear-gradient(135deg, #101827, #1b3150);
+}
+div.stButton > button {
+    width: 100%;
+    border-radius: 12px;
+    font-weight: bold;
+    min-height: 45px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-if "game" not in st.session_state:
-    st.session_state.game = False
+LEVELS = ["Dễ", "Vừa", "Khó"]
 
 
 def tao_cau_hoi(level):
-    # CẤP 1: TOÁN TIỂU HỌC
-    if level == LEVELS[0]:
-        dang = random.choice(["cong", "tru", "nhan", "chia"])
+    # DỄ: Toán cơ bản
+    if level == "Dễ":
+        dang = random.choice(["+", "-", "*", "/"])
 
-        if dang == "cong":
-            a = random.randint(10, 999)
-            b = random.randint(10, 999)
+        if dang == "+":
+            a, b = random.randint(10, 999), random.randint(10, 999)
             return f"{a} + {b} = ?", a + b
 
-        if dang == "tru":
-            a = random.randint(100, 999)
-            b = random.randint(10, a)
+        if dang == "-":
+            a, b = random.randint(10, 999), random.randint(1, 999)
+            a, b = max(a, b), min(a, b)
             return f"{a} - {b} = ?", a - b
 
-        if dang == "nhan":
-            a = random.randint(2, 99)
-            b = random.randint(2, 12)
+        if dang == "*":
+            a, b = random.randint(2, 99), random.randint(2, 12)
             return f"{a} × {b} = ?", a * b
 
         b = random.randint(2, 12)
         kq = random.randint(2, 100)
         return f"{b * kq} ÷ {b} = ?", kq
 
-    # CẤP 2: TOÁN THCS
-    elif level == LEVELS[1]:
-        dang = random.choice([
-            "phuong_trinh",
-            "luy_thua",
-            "can_bac_hai",
-            "phan_so",
-            "hang_dang_thuc"
-        ])
+    # VỪA: Đại số THCS
+    if level == "Vừa":
+        dang = random.choice(["pt", "luy_thua", "can", "phan_so", "bieuthuc"])
 
-        if dang == "phuong_trinh":
-            x = random.randint(-10, 10)
-            a = random.randint(2, 9)
-            b = random.randint(-20, 20)
-            c = a * x + b
-            return f"Giải: {a}x + ({b}) = {c}. Tìm x", x
+        if dang == "pt":
+            x = random.randint(-20, 20)
+            a = random.randint(2, 12)
+            b = random.randint(-30, 30)
+            return f"Giải {a}x + ({b}) = {a*x+b}. Tìm x", x
 
         if dang == "luy_thua":
-            a = random.randint(2, 10)
+            a = random.randint(2, 12)
             b = random.randint(2, 4)
-            return f"Tính {a}^{b}", a ** b
+            return f"Tính {a}^{b}", a**b
 
-        if dang == "can_bac_hai":
-            a = random.randint(1, 20)
+        if dang == "can":
+            a = random.randint(2, 30)
             return f"Tính √{a*a}", a
 
         if dang == "phan_so":
-            a = random.randint(1, 10)
-            b = random.randint(2, 10)
-            c = random.randint(1, 10)
-            d = random.randint(2, 10)
-            return (
-                f"Tính {a}/{b} + {c}/{d} (làm tròn 2 chữ số)",
-                round(a / b + c / d, 2)
-            )
+            a, b = random.randint(1, 10), random.randint(2, 10)
+            c, d = random.randint(1, 10), random.randint(2, 10)
+            result = round(a / b + c / d, 2)
+            return f"Tính {a}/{b} + {c}/{d} (làm tròn 2 chữ số)", result
 
-        a = random.randint(2, 12)
-        return f"Tính ({a} + 3)² - {a}²", 6 * a + 9
+        a = random.randint(2, 15)
+        return f"Khai triển (x + {a})², hệ số của x là bao nhiêu?", 2*a
 
-    # CẤP 2 NÂNG CAO
-    else:
-        dang = random.choice([
-            "he_phuong_trinh",
-            "phuong_trinh_bac_hai",
-            "phan_tich",
-            "can_thuc",
-            "ham_so"
-        ])
+    # KHÓ: Toán nâng cao
+    dang = random.choice(["he", "bac_hai", "hang_dang_thuc", "ham_so", "can_thuc"])
 
-        if dang == "he_phuong_trinh":
-            x = random.randint(-5, 5)
-            y = random.randint(-5, 5)
-            a = x + y
-            b = x - y
-            return (
-                f"Hệ: x + y = {a}; x - y = {b}. Tính x",
-                x
-            )
+    if dang == "he":
+        x, y = random.randint(-10, 10), random.randint(-10, 10)
+        return f"Hệ x + y = {x+y}; x - y = {x-y}. Tìm x", x
 
-        if dang == "phuong_trinh_bac_hai":
-            x = random.randint(-10, 10)
-            r = random.randint(-10, 10)
-            # Nghiệm của x² + bx + c = 0 gồm x và r
-            b = -(x + r)
-            c = x * r
-            return (
-                f"Tìm nghiệm lớn hơn hoặc bằng nghiệm kia của "
-                f"t² + ({b})t + ({c}) = 0 (nhập nghiệm lớn hơn)",
-                max(x, r)
-            )
+    if dang == "bac_hai":
+        r1, r2 = random.randint(-10, 10), random.randint(-10, 10)
+        b, c = -(r1+r2), r1*r2
+        return f"Tìm nghiệm lớn nhất của x² + ({b})x + ({c}) = 0", max(r1, r2)
 
-        if dang == "phan_tich":
-            a = random.randint(2, 12)
-            return f"Giải: x² - {a*a} = 0. Nhập nghiệm dương x", a
+    if dang == "hang_dang_thuc":
+        a = random.randint(2, 20)
+        return f"Tính ({a}+1)² - ({a}-1)²", 4*a
 
-        if dang == "can_thuc":
-            a = random.randint(2, 15)
-            return f"Tính √({a*a} + {2*a + 1})", a + 1
+    if dang == "ham_so":
+        a = random.randint(2, 20)
+        return f"Cho y = 2x² - 3. Tính y khi x = {a}", 2*a*a-3
 
-        a = random.randint(2, 10)
-        return f"Cho y = 2x + 3. Tính y khi x = {a}", 2 * a + 3
+    a = random.randint(2, 20)
+    return f"Rút gọn √({a*a} × 4)", 2*a
 
 
 def bat_dau(level):
     st.session_state.level = level
-    st.session_state.questions = [
-        tao_cau_hoi(level) for _ in range(10)
-    ]
+    st.session_state.questions = [tao_cau_hoi(level) for _ in range(10)]
     st.session_state.index = 0
     st.session_state.score = 0
     st.session_state.game = True
     st.session_state.done = False
+    st.session_state.answered = False
     st.session_state.feedback = None
 
 
+if "game" not in st.session_state:
+    st.session_state.game = False
+
+if "done" not in st.session_state:
+    st.session_state.done = False
+
 if not st.session_state.game:
-    st.subheader("🎯 Chọn cấp độ")
+    st.subheader("🎯 Chọn độ khó")
 
     level = st.radio(
-        "Bạn muốn thử sức với:",
-        LEVELS
+        "Mức độ",
+        LEVELS,
+        horizontal=True
     )
 
-    st.markdown("""
-    **🟢 Cấp 1:** Cộng, trừ, nhân, chia và tính toán cơ bản.
+    if level == "Dễ":
+        st.caption("Cộng, trừ, nhân, chia và tính toán cơ bản.")
+    elif level == "Vừa":
+        st.caption("Phương trình bậc nhất, lũy thừa, căn bậc hai, phân số.")
+    else:
+        st.caption("Hệ phương trình, phương trình bậc hai, hàm số và biểu thức nâng cao.")
 
-    **🔵 Cấp 2:** Phương trình, lũy thừa, căn bậc hai,
-    phân số và hằng đẳng thức.
-
-    **🔴 Cấp 2 nâng cao:** Hệ phương trình, phương trình
-    bậc hai, phân tích đa thức và hàm số.
-    """)
+    st.info("10 câu hỏi • Mỗi câu đúng được 10 điểm.")
 
     if st.button("🚀 BẮT ĐẦU", type="primary"):
         bat_dau(level)
@@ -166,51 +145,50 @@ elif not st.session_state.done:
     i = st.session_state.index
     cau, dap_an = st.session_state.questions[i]
 
-    st.subheader(st.session_state.level)
+    st.subheader(f"Độ khó: {st.session_state.level}")
     st.progress(i / 10)
-    st.write(f"Câu {i + 1}/10")
-    st.write(f"🏆 Điểm: {st.session_state.score}/100")
-    st.markdown(f"### {cau}")
+    st.write(f"Câu {i+1}/10 | Điểm: {st.session_state.score}/100")
+    st.markdown(f"## {cau}")
 
-    with st.form(f"answer_{i}"):
-        tra_loi = st.number_input(
-            "Nhập đáp án:",
-            value=0.0,
-            step=1.0
-        )
-        gui = st.form_submit_button("Kiểm tra đáp án")
+    if st.session_state.feedback is not None:
+        if st.session_state.feedback[0]:
+            st.success("Chính xác! +10 điểm")
+        else:
+            st.error(f"Sai rồi! Đáp án: {st.session_state.feedback[1]}")
+
+    with st.form(f"form_{i}"):
+        tra_loi = st.number_input("Nhập đáp án:", value=0.0, step=1.0)
+        gui = st.form_submit_button("Kiểm tra", type="primary")
 
     if gui:
         dung = abs(float(tra_loi) - float(dap_an)) < 0.011
 
         if dung:
             st.session_state.score += 10
-            st.session_state.feedback = "correct"
-        else:
-            st.session_state.feedback = f"wrong:{dap_an}"
 
+        st.session_state.feedback = (dung, dap_an)
         st.session_state.index += 1
 
-        if st.session_state.index == 10:
+        if st.session_state.index >= 10:
             st.session_state.done = True
 
         st.rerun()
 
 else:
     st.balloons()
-    st.header("🎉 KẾT QUẢ")
-    st.metric("Điểm của bạn", f"{st.session_state.score}/100")
-    st.write(f"Cấp độ: {st.session_state.level}")
+    st.header("🏆 KẾT QUẢ")
+    st.metric("Điểm số", f"{st.session_state.score}/100")
+    st.write(f"Độ khó: {st.session_state.level}")
     st.write(f"Số câu đúng: {st.session_state.score // 10}/10")
 
     if st.session_state.score == 100:
-        st.success("Xuất sắc! Bạn đã hoàn thành hoàn hảo!")
+        st.success("Xuất sắc! Bạn đã đạt điểm tuyệt đối!")
     elif st.session_state.score >= 70:
-        st.success("Làm tốt lắm! Hãy tiếp tục cố gắng.")
+        st.success("Rất tốt! Tiếp tục phát huy nhé!")
     else:
-        st.info("Hãy luyện tập thêm và thử lại nhé!")
+        st.info("Cố gắng luyện tập để đạt điểm cao hơn!")
 
-    if st.button("🔄 CHƠI LẠI"):
+    if st.button("🔄 Chơi lại", type="primary"):
         st.session_state.game = False
         st.session_state.done = False
         st.rerun()
