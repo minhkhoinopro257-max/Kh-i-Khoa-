@@ -289,3 +289,17 @@ def set_background(image_file):
     )
 
 set_background("OIP.jpg")
+
+import os
+import streamlit as st
+
+AUDIO_FILE = "nhac_nen.mp3"
+
+if os.path.exists("nhac_nen.m4a"):
+    AUDIO_FILE = "nhac_nen.m4a"
+
+if os.path.exists(AUDIO_FILE):
+    st.subheader("🎵 Nhạc nền")
+    st.audio(AUDIO_FILE, format="audio/mp4")
+else:
+    st.info("🎵 Hãy tải file nhạc nền lên GitHub để phát nhạc.")
