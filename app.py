@@ -303,3 +303,28 @@ if os.path.exists(AUDIO_FILE):
     st.audio(AUDIO_FILE, format="audio/mp4")
 else:
     st.info("🎵 Hãy tải file nhạc nền lên GitHub để phát nhạc.")
+
+import os
+import base64
+import streamlit as st
+import streamlit.components.v1 as components
+
+audio_file = "nhac_nen.m4a"
+
+if os.path.exists(audio_file):
+    with open(audio_file, "rb") as f:
+        audio_base64 = base64.b64encode(f.read()).decode()
+
+    components.html(
+        f"""
+        <audio autoplay loop controls>
+            <source
+                src="data:audio/mp4;base64,{audio_base64}"
+                type="audio/mp4">
+            Trình duyệt không hỗ trợ phát âm thanh.
+        </audio>
+        """,
+        height=65
+    )
+else:
+    st.warning("Chưa tìm thấy file nhac_nen.m4a!")
