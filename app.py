@@ -1,267 +1,286 @@
-
-import random
-import math
 import streamlit as st
+import random
 
 st.set_page_config(
-    page_title="Math Challenge - Thi vào 10",
-    page_icon="🎓",
+    page_title="Math Challenge",
+    page_icon="🧠",
     layout="centered"
 )
 
-st.title("🎓 MATH CHALLENGE")
-st.caption("Toán Học mathematics ")
+st.title("🧠 MATH CHALLENGE")
+st.subheader("Thử thách Toán học")
+st.write("Chọn cấp độ và chinh phục các câu hỏi!")
 
-st.markdown("""
-<style>
-.stApp {
-    background: linear-gradient(135deg, #101827, #20395c);
-}
-div.stButton > button {
-    width: 100%;
-    border-radius: 12px;
-    font-weight: bold;
-    min-height: 45px;
-}
-</style>
-""", unsafe_allow_html=True)
+# =========================
+# NGÂN HÀNG CÂU HỎI
+# =========================
 
-LEVELS = ["Dễ", "Vừa", "Khó"]
+QUESTIONS = {
+    "Dễ": [
+        {
+            "q": "Giải phương trình: 3x - 7 = 11.",
+            "options": ["4", "5", "6", "7"],
+            "answer": "6",
+            "explain": "3x = 18 nên x = 6."
+        },
+        {
+            "q": "Tính: √144 + √25.",
+            "options": ["15", "17", "19", "21"],
+            "answer": "17",
+            "explain": "√144 = 12, √25 = 5. Tổng bằng 17."
+        },
+        {
+            "q": "Phân tích x² - 9 thành nhân tử.",
+            "options": [
+                "(x - 3)(x + 3)",
+                "(x - 9)(x + 1)",
+                "(x - 3)²",
+                "(x + 9)(x - 1)"
+            ],
+            "answer": "(x - 3)(x + 3)",
+            "explain": "Dùng hằng đẳng thức a² - b² = (a - b)(a + b)."
+        },
+        {
+            "q": "Nghiệm của phương trình x² = 49 là gì?",
+            "options": ["7", "-7", "±7", "49"],
+            "answer": "±7",
+            "explain": "x² = 49 nên x = 7 hoặc x = -7."
+        },
+        {
+            "q": "Một tam giác có hai góc 50° và 60°. Góc còn lại bằng bao nhiêu?",
+            "options": ["60°", "70°", "80°", "90°"],
+            "answer": "70°",
+            "explain": "Tổng ba góc trong tam giác bằng 180°."
+        }
+    ],
 
+    "Vừa": [
+        {
+            "q": "Giải phương trình: x² - 5x + 6 = 0.",
+            "options": [
+                "x = 1 hoặc 6",
+                "x = 2 hoặc 3",
+                "x = -2 hoặc -3",
+                "x = 0 hoặc 5"
+            ],
+            "answer": "x = 2 hoặc 3",
+            "explain": "Ta có x² - 5x + 6 = (x - 2)(x - 3) = 0."
+        },
+        {
+            "q": "Hai nghiệm của x² - 7x + 10 = 0 có tổng bằng bao nhiêu?",
+            "options": ["5", "7", "10", "-7"],
+            "answer": "7",
+            "explain": "Theo Viète, tổng hai nghiệm bằng -b/a = 7."
+        },
+        {
+            "q": "Tìm m để đường thẳng y = (m - 1)x + 2 song song với y = 3x - 4.",
+            "options": ["m = 2", "m = 3", "m = 4", "m = -2"],
+            "answer": "m = 4",
+            "explain": "Hai đường thẳng song song có hệ số góc bằng nhau: m - 1 = 3."
+        },
+        {
+            "q": "Giải hệ: x + y = 7 và x - y = 1.",
+            "options": [
+                "(x, y) = (3, 4)",
+                "(x, y) = (4, 3)",
+                "(x, y) = (5, 2)",
+                "(x, y) = (2, 5)"
+            ],
+            "answer": "(x, y) = (4, 3)",
+            "explain": "Cộng hai phương trình được 2x = 8, suy ra x = 4, y = 3."
+        },
+        {
+            "q": "Một tam giác vuông có hai cạnh góc vuông dài 6 và 8. Cạnh huyền bằng bao nhiêu?",
+            "options": ["9", "10", "12", "14"],
+            "answer": "10",
+            "explain": "Theo định lý Pythagore: c² = 6² + 8² = 100 nên c = 10."
+        }
+    ],
 
-# ==================== TẠO CÂU HỎI ====================
-
-def tao_cau_hoi(level):
-    dang = random.choice(
-        ["ham_so", "phuong_trinh", "viet", "hinh_hoc",
-         "thuc_te", "bieu_thuc", "xac_suat"]
-    )
-
-    # MỨC DỄ: cơ bản
-    if level == "Dễ":
-
-        if dang == "ham_so":
-            a = random.randint(1, 5)
-            x = random.randint(-5, 5)
-            return f"Cho y = {a}x. Tính y khi x = {x}", a*x
-
-        if dang == "phuong_trinh":
-            x = random.randint(-10, 10)
-            a = random.randint(2, 8)
-            b = random.randint(-10, 10)
-            return f"Giải phương trình {a}x + ({b}) = {a*x+b}. Tìm x", x
-
-        if dang == "viet":
-            x1 = random.randint(-8, 8)
-            x2 = random.randint(-8, 8)
-            b = -(x1+x2)
-            c = x1*x2
-            return f"Tính tổng hai nghiệm của x² + ({b})x + ({c}) = 0", x1+x2
-
-        if dang == "hinh_hoc":
-            a = random.randint(3, 12)
-            b = random.randint(3, 12)
-            return f"Hình chữ nhật có chiều dài {a} cm, rộng {b} cm. Tính diện tích (cm²)", a*b
-
-        if dang == "thuc_te":
-            a = random.randint(10, 50)
-            return f"Một món hàng giá {a*1000} đồng, giảm 10%. Số tiền giảm là bao nhiêu nghìn đồng?", a/10
-
-        if dang == "bieu_thuc":
-            a = random.randint(2, 15)
-            return f"Tính √{a*a} + {a}", 2*a
-
-        a = random.randint(1, 5)
-        return f"Gieo xúc xắc cân đối. Có bao nhiêu kết quả thuận lợi để xuất hiện số {a}?", 1
-
-    # MỨC VỪA: trung bình 
-    if level == "Vừa":
-
-        if dang == "ham_so":
-            a = random.randint(1, 5)
-            b = random.randint(1, 10)
-            return f"Cho y = {a}x + {b}. Tìm x khi y = {a*3+b}", 3
-
-        if dang == "phuong_trinh":
-            x = random.randint(-8, 8)
-            r = random.randint(-8, 8)
-            return f"Tìm nghiệm lớn hơn của x² - ({x+r})x + ({x*r}) = 0", max(x, r)
-
-        if dang == "viet":
-            s = random.randint(-10, 10)
-            p = random.randint(-10, 10)
-            # Tạo hai nghiệm nguyên có tổng s và tích p
-            pairs = [
-                (a, b) for a in range(-10, 11)
-                for b in range(-10, 11)
-                if a+b == s and a*b == p
-            ]
-            if pairs:
-                a, b = random.choice(pairs)
-                return f"Phương trình có hai nghiệm {a} và {b}. Tính x₁² + x₂²", a*a+b*b
-            return "Giải phương trình x² - 5x + 6 = 0. Tính tổng hai nghiệm", 5
-
-        if dang == "hinh_hoc":
-            r = random.randint(2, 10)
-            return f"Hình tròn bán kính {r} cm. Tính diện tích chia cho π (cm²)", r*r
-
-        if dang == "thuc_te":
-            a = random.randint(2, 10)
-            return f"Một xe đi {a*12} km trong {a} giờ. Tính vận tốc (km/h)", 12
-
-        if dang == "bieu_thuc":
-            a = random.randint(2, 12)
-            return f"Tính (√{a*a})² - {a}² + 3", 3
-
-        a = random.randint(1, 6)
-        return f"Hộp có 6 thẻ đánh số từ 1 đến 6. Xác suất rút được thẻ số {a} là 1/x. Tìm x", 6
-
-    # MỨC KHÓ: hơi bị khó 
-    if dang == "ham_so":
-        a = random.randint(1, 5)
-        x = random.randint(-5, 5)
-        y = a*x*x
-        return f"Cho y = {a}x². Tính y khi x = {x}", y
-
-    if dang == "phuong_trinh":
-        a = random.randint(1, 5)
-        x1 = random.randint(-8, 8)
-        x2 = random.randint(-8, 8)
-        b = -(x1+x2)
-        c = x1*x2
-        return f"Tìm tổng bình phương hai nghiệm của x² + ({b})x + ({c}) = 0", x1*x1+x2*x2
-
-    if dang == "viet":
-        x1 = random.randint(-8, 8)
-        x2 = random.randint(-8, 8)
-        b = -(x1+x2)
-        c = x1*x2
-        return f"Với hai nghiệm x₁, x₂ của x² + ({b})x + ({c}) = 0, tính 1/x₁ + 1/x₂", round((x1+x2)/(x1*x2), 2) if x1*x2 else 0
-
-    if dang == "hinh_hoc":
-        a = random.randint(3, 12)
-        b = random.randint(3, 12)
-        return f"Tam giác vuông có hai cạnh góc vuông {a} và {b}. Tính bình phương cạnh huyền", a*a+b*b
-
-    if dang == "thuc_te":
-        x = random.randint(2, 10)
-        return f"Một hình chữ nhật có chiều rộng {x} cm, dài hơn chiều rộng 3 cm. Tính diện tích (cm²)", x*(x+3)
-
-    if dang == "bieu_thuc":
-        a = random.randint(2, 12)
-        return f"Tính (√{a*a} + 1)(√{a*a} - 1)", a*a-1
-
-    a = random.randint(1, 6)
-    return f"Gieo xúc xắc cân đối. Xác suất ra số {a} bằng mấy phần sáu? Nhập tử số", 1
-
-
-# ==================== TRẠNG THÁI GAME ====================
-
-if "game" not in st.session_state:
-    st.session_state.game = False
-if "done" not in st.session_state:
-    st.session_state.done = False
-
-
-def bat_dau(level):
-    st.session_state.level = level
-    st.session_state.questions = [
-        tao_cau_hoi(level) for _ in range(10)
+    "Khó": [
+        {
+            "q": "Tìm giá trị nhỏ nhất của A = x² + 4/x² với x ≠ 0.",
+            "options": ["2", "4", "6", "8"],
+            "answer": "4",
+            "explain": "Theo AM-GM: x² + 4/x² ≥ 2√(x² · 4/x²) = 4. Dấu bằng xảy ra khi x² = 2."
+        },
+        {
+            "q": "Phương trình x² - 2mx + m + 2 = 0 có hai nghiệm thực phân biệt khi nào?",
+            "options": [
+                "m < -1 hoặc m > 2",
+                "-1 < m < 2",
+                "m ≤ -1 hoặc m ≥ 2",
+                "Mọi m ∈ ℝ"
+            ],
+            "answer": "m < -1 hoặc m > 2",
+            "explain": "Δ' = m² - m - 2 = (m - 2)(m + 1). Hai nghiệm phân biệt khi Δ' > 0, tức m < -1 hoặc m > 2."
+        },
+        {
+            "q": "Cho a + b + c = 0. Biểu thức a³ + b³ + c³ bằng gì?",
+            "options": [
+                "0 trong mọi trường hợp",
+                "abc",
+                "3abc",
+                "-3abc"
+            ],
+            "answer": "3abc",
+            "explain": "Dùng hằng đẳng thức a³ + b³ + c³ - 3abc = (a + b + c)(a² + b² + c² - ab - bc - ca). Vì a + b + c = 0 nên tổng lập phương bằng 3abc."
+        },
+        {
+            "q": "Có bao nhiêu cặp số nguyên dương có thứ tự (x, y) thỏa mãn 1/x + 1/y = 1/6?",
+            "options": ["6", "8", "9", "12"],
+            "answer": "9",
+            "explain": "Biến đổi được (x - 6)(y - 6) = 36. Vì x, y > 6, số cặp tương ứng với số cặp ước dương có thứ tự của 36. Có 9 cặp."
+        },
+        {
+            "q": "Phương trình x⁴ - 5x² + 4 = 0 có bao nhiêu nghiệm thực phân biệt?",
+            "options": ["1", "2", "3", "4"],
+            "answer": "4",
+            "explain": "Đặt t = x² ≥ 0. Ta có t² - 5t + 4 = 0, suy ra t = 1 hoặc 4. Do đó x = ±1 hoặc ±2, có 4 nghiệm."
+        },
+        {
+            "q": "Với mọi số thực a, b, c thỏa mãn a + b + c = 0, mệnh đề nào luôn đúng?",
+            "options": [
+                "a² + b² + c² = 0",
+                "a² + b² + c² = ab + bc + ca",
+                "a² + b² + c² = -2(ab + bc + ca)",
+                "ab + bc + ca luôn dương"
+            ],
+            "answer": "a² + b² + c² = -2(ab + bc + ca)",
+            "explain": "Bình phương a + b + c = 0 được a² + b² + c² + 2(ab + bc + ca) = 0."
+        },
+        {
+            "q": "Cho x, y > 0 và xy = 1. Giá trị nhỏ nhất của P = (x + 1)(y + 1) là bao nhiêu?",
+            "options": ["2", "3", "4", "5"],
+            "answer": "4",
+            "explain": "P = xy + x + y + 1 = x + y + 2. Vì xy = 1 nên x + y ≥ 2. Do đó P ≥ 4, đạt được khi x = y = 1."
+        },
+        {
+            "q": "Một tam giác có ba cạnh 13, 14, 15. Diện tích tam giác bằng bao nhiêu?",
+            "options": ["72", "78", "84", "90"],
+            "answer": "84",
+            "explain": "Nửa chu vi p = 21. Theo công thức Heron: S = √[21(21-13)(21-14)(21-15)] = √(21·8·7·6) = 84."
+        }
     ]
+}
+
+# =========================
+# TRẠNG THÁI GAME
+# =========================
+
+if "level" not in st.session_state:
+    st.session_state.level = "Dễ"
+
+if "questions" not in st.session_state:
+    st.session_state.questions = random.sample(QUESTIONS["Dễ"], 5)
+
+if "index" not in st.session_state:
+    st.session_state.index = 0
+
+if "score" not in st.session_state:
+    st.session_state.score = 0
+
+if "answered" not in st.session_state:
+    st.session_state.answered = False
+
+if "finished" not in st.session_state:
+    st.session_state.finished = False
+
+# =========================
+# CHỌN CẤP ĐỘ
+# =========================
+
+level = st.selectbox(
+    "🎯 Chọn cấp độ",
+    ["Dễ", "Vừa", "Khó"],
+    index=["Dễ", "Vừa", "Khó"].index(st.session_state.level)
+)
+
+if level != st.session_state.level:
+    st.session_state.level = level
+    st.session_state.questions = random.sample(
+        QUESTIONS[level],
+        min(5, len(QUESTIONS[level]))
+    )
     st.session_state.index = 0
     st.session_state.score = 0
-    st.session_state.game = True
-    st.session_state.done = False
-    st.session_state.feedback = None
+    st.session_state.answered = False
+    st.session_state.finished = False
+    st.rerun()
 
+# =========================
+# HIỂN THỊ CÂU HỎI
+# =========================
 
-# ==================== MÀN HÌNH CHÍNH ====================
+if not st.session_state.finished:
+    questions = st.session_state.questions
+    i = st.session_state.index
 
-if not st.session_state.game:
+    st.progress(i / len(questions))
+    st.write(f"**Câu {i + 1}/{len(questions)}**")
+    st.write(questions[i]["q"])
 
-    st.subheader("🎯 Chọn độ khó")
-
-    level = st.radio(
-        "Mức độ",
-        LEVELS,
-        horizontal=True
+    choice = st.radio(
+        "Chọn đáp án:",
+        questions[i]["options"],
+        key=f"choice_{st.session_state.level}_{i}"
     )
 
-    if level == "Dễ":
-        st.info("Cơ bản.")
-    elif level == "Vừa":
-        st.info("cũng vừa .")
-    else:
-        st.warning("hơi khó .")
+    if st.button("Kiểm tra đáp án", disabled=st.session_state.answered):
+        st.session_state.answered = True
 
-    st.write("📌 10 câu hỏi • Mỗi câu đúng 10 điểm.")
-
-    if st.button("🚀 BẮT ĐẦU THI", type="primary"):
-        bat_dau(level)
-        st.rerun()
-
-elif not st.session_state.done:
-
-    i = st.session_state.index
-    cau, dap_an = st.session_state.questions[i]
-
-    st.subheader(f"Độ khó: {st.session_state.level}")
-    st.progress(i / 10)
-    st.write(f"Câu {i+1}/10")
-    st.write(f"🏆 Điểm: {st.session_state.score}/100")
-    st.markdown(f"### {cau}")
-
-    if st.session_state.feedback is not None:
-        dung, da = st.session_state.feedback
-        if dung:
-            st.success("Chính xác! +10 điểm")
+        if choice == questions[i]["answer"]:
+            st.session_state.score += 1
+            st.success("🎉 Chính xác! +1 điểm")
         else:
-            st.error(f"Chưa đúng. Đáp án: {da}")
+            st.error("❌ Chưa đúng!")
 
-    with st.form(f"answer_{i}"):
-        tra_loi = st.number_input(
-            "Nhập đáp án (có thể nhập số thập phân):",
-            value=0.0,
-            step=1.0
+        st.info(
+            "**Đáp án:** " + questions[i]["answer"]
+            + "\n\n**Giải thích:** " + questions[i]["explain"]
         )
-        gui = st.form_submit_button("Kiểm tra đáp án")
 
-    if gui:
-        dung = abs(float(tra_loi) - float(dap_an)) < 0.011
+    if st.session_state.answered:
+        if i + 1 < len(questions):
+            if st.button("Câu tiếp theo ➜"):
+                st.session_state.index += 1
+                st.session_state.answered = False
+                st.rerun()
+        else:
+            if st.button("Xem kết quả 🏆"):
+                st.session_state.finished = True
+                st.rerun()
 
-        if dung:
-            st.session_state.score += 10
-
-        st.session_state.feedback = (dung, dap_an)
-        st.session_state.index += 1
-
-        if st.session_state.index >= 10:
-            st.session_state.done = True
-
-        st.rerun()
+# =========================
+# KẾT QUẢ
+# =========================
 
 else:
+    total = len(st.session_state.questions)
+    score = st.session_state.score
 
     st.balloons()
-    st.header("🏁 KẾT QUẢ BÀI THI")
-    st.metric("Tổng điểm", f"{st.session_state.score}/100")
-    st.write(f"Độ khó: {st.session_state.level}")
-    st.write(f"Số câu đúng: {st.session_state.score // 10}/10")
+    st.title("🏆 KẾT QUẢ")
+    st.metric("Số câu đúng", f"{score}/{total}")
+    st.write(f"**Cấp độ:** {st.session_state.level}")
 
-    if st.session_state.score >= 90:
-        st.success("Xuất sắc! Bạn làm bài rất tốt!")
-    elif st.session_state.score >= 70:
-        st.success("Khá tốt! Hãy tiếp tục luyện tập.")
+    if score == total:
+        st.success("Xuất sắc! Bạn đã trả lời đúng tất cả câu hỏi.")
+    elif score >= total * 0.6:
+        st.info("Làm tốt lắm! Hãy tiếp tục luyện tập.")
     else:
-        st.warning("Hãy xem lại kiến thức và thử lại nhé!")
+        st.warning("Bạn nên xem lại lời giải và thử sức lần nữa.")
 
-    if st.button("🔄 Thi lại", type="primary"):
-        st.session_state.game = False
-        st.session_state.done = False
+    if st.button("🔄 Chơi lại"):
+        st.session_state.questions = random.sample(
+            QUESTIONS[st.session_state.level],
+            min(5, len(QUESTIONS[st.session_state.level]))
+        )
+        st.session_state.index = 0
+        st.session_state.score = 0
+        st.session_state.answered = False
+        st.session_state.finished = False
         st.rerun()
-
-import base64
-import streamlit as st
 
 def set_background(image_file):
     with open(image_file, "rb") as f:
