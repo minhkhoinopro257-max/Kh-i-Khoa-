@@ -188,7 +188,7 @@ if not st.session_state.game:
     )
 
     if level == "Dễ":
-        st.info("Co bản.")
+        st.info("Cơ bản.")
     elif level == "Vừa":
         st.info("cũng vừa .")
     else:
