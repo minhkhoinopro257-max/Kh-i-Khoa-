@@ -259,3 +259,33 @@ else:
         st.session_state.game = False
         st.session_state.done = False
         st.rerun()
+
+import base64
+import streamlit as st
+
+def set_background(image_file):
+    with open(image_file, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background:
+                linear-gradient(
+                    rgba(10, 18, 35, 0.72),
+                    rgba(10, 18, 35, 0.82)
+                ),
+                url("data:image/jpeg;base64,{encoded}");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+set_background("OIP.jpg")
