@@ -340,14 +340,140 @@ set_background("OIP.jpg")
 import os
 from pathlib import Path
 
-# Tìm file trong thư mục chứa app.py
+import streamlit as st
+import streamlit.components.v1 as components
+import base64
+from pathlib import Path
+import json
+
+# ======================================
+# CẤU HÌNH DANH SÁCH NHẠC
+# ======================================
+
 BASE_DIR = Path(__file__).resolve().parent
 
 MUSIC_FILES = [
-    BASE_DIR / "nhac1.m4a",
-    BASE_DIR / "nhac2.m4a",
-    BASE_DIR / "nhac3.m4a",
+    "nhac1.m4a",
+    "nhac2.m4a",
+    "nhac3.m4a",
 ]
 
-for file in MUSIC_FILES:
-    print(file.name, "=>", file.exists())
+playlist = []
+
+for filename in MUSIC_FILES:
+    file_path = BASE_DIR / filename
+
+    if file_path.is_file():
+        try:
+            with open(file_path, "rb") as f:
+                audio_data = base64.b64encode(
+                    f.read()
+                ).decode("utf-8")
+
+            playlist.append({
+                "name": filename,
+                "src": "data:audio/mp4;base64," + audio_data
+            })
+        except OSError:
+            st.warning(f"Không đọc được file: {filename}")
+    else:
+        st.warning(
+            f"Không tìm thấy {filename}. "
+            "Hãy tải file lên cùng thư mục với app.py."
+        )
+
+# ======================================
+# TRÌNH PHÁT NHẠC
+# ======================================
+
+if playlist:
+    playlist_json = json.dumps(playlist)
+
+    components.html(
+        f"""
+        <div style="
+            padding: 14px;
+            border-radius: 14px;
+            background: #20242c;
+            color: white;
+            font-family: Arial, sans-serif;
+        ">
+            <h3 style="margin-top: 0;">
+                🎵 NHẠC NỀN
+            </h3>
+
+            <div id="trackName"
+                 style="margin-bottom: 12px;">
+            </div>
+
+            <audio id="music"
+                   controls
+                   style="width: 100%;">
+            </audio>
+
+            <div style="
+                display: flex;
+                gap: 10px;
+                margin-top: 12px;
+            ">
+                <button id="prevBtn">⏮ Bài trước</button>
+                <button id="nextBtn">⏭ Bài tiếp</button>
+            </div>
+
+            <p style="font-size: 12px; color: #bbbbbb;">
+                Hết bài sẽ tự động chuyển sang bài tiếp theo.
+            </p>
+        </div>
+
+        <script>
+            const playlist = {playlist_json};
+            const audio = document.getElementById("music");
+            const trackName = document.getElementById("trackName");
+
+            let currentTrack = 0;
+
+            function loadTrack(index, autoplay = false) {{
+                currentTrack =
+                    (index + playlist.length) % playlist.length;
+
+                audio.src = playlist[currentTrack].src;
+
+                trackName.textContent =
+                    "Đang chọn: " + playlist[currentTrack].name;
+
+                if (autoplay) {{
+                    audio.play().catch(() => {{
+                        trackName.textContent =
+                            "Nhấn Play để phát: " +
+                            playlist[currentTrack].name;
+                    }});
+                }}
+            }}
+
+            function nextTrack() {{
+                loadTrack(currentTrack + 1, true);
+            }}
+
+            function previousTrack() {{
+                loadTrack(currentTrack - 1, true);
+            }}
+
+            document.getElementById("nextBtn")
+                .addEventListener("click", nextTrack);
+
+            document.getElementById("prevBtn")
+                .addEventListener("click", previousTrack);
+
+            audio.addEventListener("ended", nextTrack);
+
+            loadTrack(0);
+        </script>
+        """,
+        height=230,
+        scrolling=False
+    )
+else:
+    st.error(
+        "Chưa tìm thấy file nhạc nào! "
+        "Hãy kiểm tra lại tên và vị trí 3 file."
+    )
