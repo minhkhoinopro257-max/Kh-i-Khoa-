@@ -337,4 +337,17 @@ def set_background(image_file):
 
 set_background("OIP.jpg")
 
+import os
+from pathlib import Path
 
+# Tìm file trong thư mục chứa app.py
+BASE_DIR = Path(__file__).resolve().parent
+
+MUSIC_FILES = [
+    BASE_DIR / "Bản ghi Mới 11.m4a",
+    BASE_DIR / "Bản ghi Mới 15.m4a",
+    BASE_DIR / "Bản ghi Mới 19.m4a",
+]
+
+for file in MUSIC_FILES:
+    print(file.name, "=>", file.exists())
