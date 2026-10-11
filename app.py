@@ -344,9 +344,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 MUSIC_FILES = [
-    BASE_DIR / "Bản ghi Mới 11.m4a",
-    BASE_DIR / "Bản ghi Mới 15.m4a",
-    BASE_DIR / "Bản ghi Mới 19.m4a",
+    BASE_DIR / "nhac1.m4a",
+    BASE_DIR / "nhac2.m4a",
+    BASE_DIR / "nhac3.m4a",
 ]
 
 for file in MUSIC_FILES:
