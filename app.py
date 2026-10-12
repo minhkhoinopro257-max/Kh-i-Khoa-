@@ -310,3 +310,137 @@ def set_background(image_file):
     )
 
 set_background("OIP.jpg")
+
+components.html(
+    f"""
+    <div style="
+        box-sizing: border-box;
+        padding: 20px;
+        border: 2px solid #64748b;
+        border-radius: 16px;
+        background: #111827;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        width: 100%;
+    ">
+        <h2 style="
+            margin: 0 0 18px 0;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 800;
+        ">
+            🎵 NHẠC NỀN
+        </h2>
+
+        <div id="trackName" style="
+            padding: 14px;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            background: #263449;
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        ">
+            Đang tải danh sách nhạc...
+        </div>
+
+        <audio
+            id="music"
+            controls
+            style="
+                width: 100%;
+                height: 48px;
+                display: block;
+                margin-bottom: 16px;
+            ">
+        </audio>
+
+        <div style="
+            display: flex;
+            gap: 12px;
+        ">
+            <button id="prevBtn" style="
+                flex: 1;
+                padding: 14px 8px;
+                border: 1px solid #93c5fd;
+                border-radius: 10px;
+                background: #1d4ed8;
+                color: #ffffff;
+                font-size: 15px;
+                font-weight: bold;
+                cursor: pointer;
+            ">
+                ⏮ BÀI TRƯỚC
+            </button>
+
+            <button id="nextBtn" style="
+                flex: 1;
+                padding: 14px 8px;
+                border: 1px solid #86efac;
+                border-radius: 10px;
+                background: #15803d;
+                color: #ffffff;
+                font-size: 15px;
+                font-weight: bold;
+                cursor: pointer;
+            ">
+                BÀI TIẾP ⏭
+            </button>
+        </div>
+
+        <p style="
+            margin: 16px 0 0 0;
+            color: #e5e7eb;
+            font-size: 14px;
+            line-height: 1.6;
+        ">
+            🔁 Hết bài sẽ tự chuyển sang bài tiếp theo.
+        </p>
+    </div>
+
+    <script>
+        const playlist = {playlist_json};
+        const audio = document.getElementById("music");
+        const trackName = document.getElementById("trackName");
+
+        let currentTrack = 0;
+
+        function loadTrack(index, autoplay = false) {{
+            currentTrack =
+                (index + playlist.length) % playlist.length;
+
+            audio.src = playlist[currentTrack].src;
+
+            trackName.textContent =
+                "🎶 Đang chọn: " + playlist[currentTrack].name;
+
+            if (autoplay) {{
+                audio.play().catch(() => {{
+                    trackName.textContent =
+                        "▶ Nhấn Play để phát: " +
+                        playlist[currentTrack].name;
+                }});
+            }}
+        }}
+
+        document.getElementById("prevBtn")
+            .addEventListener("click", () => {{
+                loadTrack(currentTrack - 1, true);
+            }});
+
+        document.getElementById("nextBtn")
+            .addEventListener("click", () => {{
+                loadTrack(currentTrack + 1, true);
+            }});
+
+        audio.addEventListener("ended", () => {{
+            loadTrack(currentTrack + 1, true);
+        }});
+
+        loadTrack(0);
+    </script>
+    """,
+    height=330,
+    scrolling=False
+)
