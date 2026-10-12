@@ -324,7 +324,7 @@ import json
 BASE_DIR = Path(__file__).resolve().parent
 
 MUSIC_FILES = [
-    "Bản ghi Mới 11.m4a",
+    "nhac_nen.m4a",
     "nhac1.m4a",
     "nhac2.m4a",
     "nhac3.m4a",
