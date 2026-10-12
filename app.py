@@ -311,6 +311,13 @@ def set_background(image_file):
 
 set_background("OIP.jpg")
 
+MUSIC_FILES = [
+    "Bản ghi Mới 11.m4a",
+    "nhac1.m4a",
+    "nhac2.m4a",
+    "nhac3.m4a",
+]
+
 components.html(
     f"""
     <div style="
@@ -444,3 +451,4 @@ components.html(
     height=330,
     scrolling=False
 )
+
