@@ -327,41 +327,7 @@ import base64
 from pathlib import Path
 import json
 
-# ======================================
-# CẤU HÌNH DANH SÁCH NHẠC
-# ======================================
 
-BASE_DIR = Path(__file__).resolve().parent
-
-MUSIC_FILES = [
-    "nhac1.m4a",
-    "nhac2.m4a",
-    "nhac3.m4a",
-]
-
-playlist = []
-
-for filename in MUSIC_FILES:
-    file_path = BASE_DIR / filename
-
-    if file_path.is_file():
-        try:
-            with open(file_path, "rb") as f:
-                audio_data = base64.b64encode(
-                    f.read()
-                ).decode("utf-8")
-
-            playlist.append({
-                "name": filename,
-                "src": "data:audio/mp4;base64," + audio_data
-            })
-        except OSError:
-            st.warning(f"Không đọc được file: {filename}")
-    else:
-        st.warning(
-            f"Không tìm thấy {filename}. "
-            "Hãy tải file lên cùng thư mục với app.py."
-        )
 
 # ======================================
 # TRÌNH PHÁT NHẠC
