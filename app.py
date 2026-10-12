@@ -311,6 +311,18 @@ def set_background(image_file):
 
 set_background("OIP.jpg")
 
+import streamlit as st
+import streamlit.components.v1 as components
+import base64
+from pathlib import Path
+import json
+
+# ==========================================
+# DANH SÁCH NHẠC NỀN
+# ==========================================
+
+BASE_DIR = Path(__file__).resolve().parent
+
 MUSIC_FILES = [
     "Bản ghi Mới 11.m4a",
     "nhac1.m4a",
@@ -318,137 +330,175 @@ MUSIC_FILES = [
     "nhac3.m4a",
 ]
 
-components.html(
-    f"""
-    <div style="
-        box-sizing: border-box;
-        padding: 20px;
-        border: 2px solid #64748b;
-        border-radius: 16px;
-        background: #111827;
-        color: #ffffff;
-        font-family: Arial, sans-serif;
-        width: 100%;
-    ">
-        <h2 style="
-            margin: 0 0 18px 0;
-            color: #ffffff;
-            font-size: 24px;
-            font-weight: 800;
-        ">
-            🎵 NHẠC NỀN
-        </h2>
+playlist = []
 
-        <div id="trackName" style="
-            padding: 14px;
-            margin-bottom: 16px;
-            border-radius: 10px;
-            background: #263449;
-            color: #ffffff;
-            font-size: 17px;
-            font-weight: bold;
-            overflow-wrap: anywhere;
-        ">
-            Đang tải danh sách nhạc...
-        </div>
+for filename in MUSIC_FILES:
+    file_path = BASE_DIR / filename
 
-        <audio
-            id="music"
-            controls
-            style="
-                width: 100%;
-                height: 48px;
-                display: block;
-                margin-bottom: 16px;
-            ">
-        </audio>
+    if file_path.is_file():
+        try:
+            with open(file_path, "rb") as f:
+                audio_base64 = base64.b64encode(
+                    f.read()
+                ).decode("utf-8")
 
+            playlist.append({
+                "name": filename,
+                "src": "data:audio/mp4;base64," + audio_base64
+            })
+        except OSError:
+            st.warning(f"Không đọc được file: {filename}")
+    else:
+        st.warning(f"Không tìm thấy file nhạc: {filename}")
+
+# ==========================================
+# GIAO DIỆN NHẠC NỀN
+# ==========================================
+
+if playlist:
+    playlist_json = json.dumps(playlist, ensure_ascii=False)
+
+    components.html(
+        f"""
         <div style="
-            display: flex;
-            gap: 12px;
+            box-sizing: border-box;
+            padding: 22px;
+            background: #101827;
+            color: #ffffff;
+            border: 2px solid #60a5fa;
+            border-radius: 18px;
+            font-family: Arial, sans-serif;
+            width: 100%;
         ">
-            <button id="prevBtn" style="
-                flex: 1;
-                padding: 14px 8px;
-                border: 1px solid #93c5fd;
-                border-radius: 10px;
-                background: #1d4ed8;
+            <h2 style="
+                margin: 0 0 18px;
                 color: #ffffff;
-                font-size: 15px;
-                font-weight: bold;
-                cursor: pointer;
+                font-size: 25px;
+                font-weight: 900;
             ">
-                ⏮ BÀI TRƯỚC
-            </button>
+                🎵 MUSIC PLAYER
+            </h2>
 
-            <button id="nextBtn" style="
-                flex: 1;
-                padding: 14px 8px;
-                border: 1px solid #86efac;
-                border-radius: 10px;
-                background: #15803d;
+            <div id="trackName" style="
+                padding: 15px;
+                margin-bottom: 16px;
+                background: #263449;
+                border: 1px solid #64748b;
+                border-radius: 12px;
                 color: #ffffff;
-                font-size: 15px;
+                font-size: 16px;
                 font-weight: bold;
-                cursor: pointer;
+                overflow-wrap: anywhere;
             ">
-                BÀI TIẾP ⏭
-            </button>
+                Đang tải nhạc...
+            </div>
+
+            <audio id="music"
+                controls
+                preload="metadata"
+                style="
+                    width: 100%;
+                    height: 48px;
+                    display: block;
+                    margin-bottom: 18px;
+                ">
+            </audio>
+
+            <div style="
+                display: flex;
+                gap: 12px;
+            ">
+                <button id="prevBtn" style="
+                    flex: 1;
+                    padding: 15px 5px;
+                    background: #1d4ed8;
+                    color: white;
+                    border: 2px solid #93c5fd;
+                    border-radius: 12px;
+                    font-size: 14px;
+                    font-weight: 900;
+                    cursor: pointer;
+                ">
+                    ⏮ BÀI TRƯỚC
+                </button>
+
+                <button id="nextBtn" style="
+                    flex: 1;
+                    padding: 15px 5px;
+                    background: #15803d;
+                    color: white;
+                    border: 2px solid #86efac;
+                    border-radius: 12px;
+                    font-size: 14px;
+                    font-weight: 900;
+                    cursor: pointer;
+                ">
+                    BÀI TIẾP ⏭
+                </button>
+            </div>
+
+            <p style="
+                margin: 16px 0 0;
+                color: #e5e7eb;
+                font-size: 14px;
+                line-height: 1.6;
+            ">
+                🔁 Danh sách nhạc tự động lặp lại.
+                Nhấn Play để bắt đầu phát nhạc.
+            </p>
         </div>
 
-        <p style="
-            margin: 16px 0 0 0;
-            color: #e5e7eb;
-            font-size: 14px;
-            line-height: 1.6;
-        ">
-            🔁 Hết bài sẽ tự chuyển sang bài tiếp theo.
-        </p>
-    </div>
+        <script>
+            const playlist = {playlist_json};
+            const audio = document.getElementById("music");
+            const trackName = document.getElementById("trackName");
 
-    <script>
-        const playlist = {playlist_json};
-        const audio = document.getElementById("music");
-        const trackName = document.getElementById("trackName");
+            let currentTrack = 0;
 
-        let currentTrack = 0;
+            function loadTrack(index, autoplay = false) {{
+                currentTrack =
+                    (index + playlist.length) % playlist.length;
 
-        function loadTrack(index, autoplay = false) {{
-            currentTrack =
-                (index + playlist.length) % playlist.length;
+                audio.src = playlist[currentTrack].src;
 
-            audio.src = playlist[currentTrack].src;
+                trackName.textContent =
+                    "🎶 Bài " + (currentTrack + 1) +
+                    "/" + playlist.length + ": " +
+                    playlist[currentTrack].name;
 
-            trackName.textContent =
-                "🎶 Đang chọn: " + playlist[currentTrack].name;
-
-            if (autoplay) {{
-                audio.play().catch(() => {{
-                    trackName.textContent =
-                        "▶ Nhấn Play để phát: " +
-                        playlist[currentTrack].name;
-                }});
+                if (autoplay) {{
+                    audio.play().catch(() => {{
+                        trackName.textContent =
+                            "▶ Hãy nhấn Play: " +
+                            playlist[currentTrack].name;
+                    }});
+                }}
             }}
-        }}
 
-        document.getElementById("prevBtn")
-            .addEventListener("click", () => {{
-                loadTrack(currentTrack - 1, true);
-            }});
+            document.getElementById("prevBtn")
+                .addEventListener("click", () => {{
+                    loadTrack(currentTrack - 1, true);
+                }});
 
-        document.getElementById("nextBtn")
-            .addEventListener("click", () => {{
+            document.getElementById("nextBtn")
+                .addEventListener("click", () => {{
+                    loadTrack(currentTrack + 1, true);
+                }});
+
+            audio.addEventListener("ended", () => {{
                 loadTrack(currentTrack + 1, true);
             }});
 
-        audio.addEventListener("ended", () => {{
-            loadTrack(currentTrack + 1, true);
-        }});
+            loadTrack(0);
+        </script>
+        """,
+        height=340,
+        scrolling=False
+    )
+else:
+    st.error(
+        "Không tìm thấy file nhạc. "
+        "Hãy kiểm tra tên file và thư mục chứa app.py."
+    )
 
-        loadTrack(0);
-    </script>
-    """,
-    height=330,
-    scrolling=False
-)
 
