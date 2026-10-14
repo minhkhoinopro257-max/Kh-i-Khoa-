@@ -1,37 +1,43 @@
 import streamlit as st
 import random
-```python
-# ===== CSS LÀM CHỮ NỔI BẬT HƠN =====
+import time
+
+# ===== CSS LÀM CHỮ NỔI BẬT, DỄ ĐỌC =====
 st.markdown("""
 <style>
-/* Chữ toàn trang */
+
+/* Nền và chữ toàn trang */
 .stApp {
     color: #FFFFFF;
 }
 
-/* Tiêu đề */
+/* Tiêu đề nổi bật */
 h1, h2, h3 {
     color: #FFFFFF !important;
     font-weight: 900 !important;
     text-shadow:
         2px 2px 4px #000000,
-        0 0 12px rgba(0, 0, 0, 0.9) !important;
+        0 0 10px rgba(0, 0, 0, 0.9) !important;
 }
 
-/* Chữ thường, câu hỏi và nhãn */
-p, label, .stMarkdown, 
-[data-testid="stWidgetLabel"] {
+/* Chữ nội dung */
+.stMarkdown p,
+.stMarkdown li,
+.stCaption {
     color: #FFFFFF !important;
     font-weight: 600 !important;
-    text-shadow: 1px 1px 3px #000000;
+    text-shadow: 1px 1px 4px #000000;
 }
 
-/* Khung nội dung có nền tối trong suốt */
-[data-testid="stVerticalBlock"] > div {
-    color: #FFFFFF;
+/* Nhãn và câu hỏi */
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] p {
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    text-shadow: 1px 1px 4px #000000 !important;
 }
 
-/* Chữ trong lựa chọn đáp án */
+/* Đáp án trắc nghiệm */
 [data-testid="stRadio"] label,
 [data-testid="stRadio"] label p {
     color: #FFFFFF !important;
@@ -39,9 +45,17 @@ p, label, .stMarkdown,
     text-shadow: 1px 1px 3px #000000;
 }
 
-/* Nền tối phía sau các thành phần nhập liệu */
-.stSelectbox > div > div {
-    background-color: rgba(15, 23, 42, 0.95) !important;
+/* Khung chọn đáp án */
+[data-testid="stRadio"] > div {
+    background: rgba(10, 15, 30, 0.82);
+    border: 1px solid rgba(96, 165, 250, 0.65);
+    border-radius: 12px;
+    padding: 12px 16px;
+}
+
+/* Ô chọn */
+[data-testid="stSelectbox"] > div > div {
+    background-color: #111827 !important;
     color: #FFFFFF !important;
     border: 1px solid #60A5FA !important;
     border-radius: 10px !important;
@@ -49,48 +63,61 @@ p, label, .stMarkdown,
 
 /* Nút bấm */
 .stButton > button {
-    background: linear-gradient(135deg, #2563EB, #7C3AED);
+    background: linear-gradient(135deg, #2563EB, #7C3AED) !important;
     color: #FFFFFF !important;
     font-weight: 800 !important;
     border: 1px solid #93C5FD !important;
     border-radius: 12px !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
+/* Hiệu ứng khi di chuột */
 .stButton > button:hover {
-    background: linear-gradient(135deg, #7C3AED, #EC4899);
+    background: linear-gradient(135deg, #0891B2, #7C3AED) !important;
     border: 1px solid #FFFFFF !important;
-    transform: scale(1.02);
+    transform: translateY(-2px);
 }
 
 /* Thanh tiến trình */
-.stProgress > div > div > div > div {
-    background-color: #38BDF8 !important;
+[data-testid="stProgressBar"] > div > div > div {
+    background: #38BDF8 !important;
 }
 
-/* Làm chữ phụ dễ đọc hơn */
-small, .stCaption {
-    color: #E2E8F0 !important;
-    font-weight: 600 !important;
+/* Ô nhập văn bản */
+.stTextInput input {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+    color: #FFFFFF !important;
+    border: 1px solid #60A5FA !important;
+    border-radius: 10px !important;
 }
 
-/* Giữ chữ dễ đọc trên nền tối */
+/* Thông báo */
+[data-testid="stAlert"] {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+    color: #FFFFFF !important;
+    border-radius: 12px !important;
+}
+
+/* Chữ trong sidebar */
+[data-testid="stSidebar"] {
+    background-color: rgba(10, 15, 30, 0.96);
+}
+
+[data-testid="stSidebar"] * {
+    color: #FFFFFF;
+}
+
+/* Làm chữ dễ đọc hơn trên nền anime */
 [data-testid="stAppViewContainer"] {
     color: #FFFFFF;
 }
+
 </style>
 """, unsafe_allow_html=True)
-```
-st.set_page_config(
-    page_title="Math Challenge",
-    page_icon="🧠",
-    layout="centered"
-)
 
-st.title("🧠 MATH CHALLENGE")
-st.subheader("Thử thách Toán học")
-st.write("Chọn cấp độ và chinh phục các câu hỏi!")
+# ===== CODE GAME CỦA BẠN ĐẶT TIẾP Ở DƯỚI =====
+```
 
 # =========================
 # NGÂN HÀNG CÂU HỎI
