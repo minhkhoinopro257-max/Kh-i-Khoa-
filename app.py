@@ -1,6 +1,87 @@
 import streamlit as st
 import random
+```python
+# ===== CSS LÀM CHỮ NỔI BẬT HƠN =====
+st.markdown("""
+<style>
+/* Chữ toàn trang */
+.stApp {
+    color: #FFFFFF;
+}
 
+/* Tiêu đề */
+h1, h2, h3 {
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
+    text-shadow:
+        2px 2px 4px #000000,
+        0 0 12px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Chữ thường, câu hỏi và nhãn */
+p, label, .stMarkdown, 
+[data-testid="stWidgetLabel"] {
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    text-shadow: 1px 1px 3px #000000;
+}
+
+/* Khung nội dung có nền tối trong suốt */
+[data-testid="stVerticalBlock"] > div {
+    color: #FFFFFF;
+}
+
+/* Chữ trong lựa chọn đáp án */
+[data-testid="stRadio"] label,
+[data-testid="stRadio"] label p {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    text-shadow: 1px 1px 3px #000000;
+}
+
+/* Nền tối phía sau các thành phần nhập liệu */
+.stSelectbox > div > div {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+    color: #FFFFFF !important;
+    border: 1px solid #60A5FA !important;
+    border-radius: 10px !important;
+}
+
+/* Nút bấm */
+.stButton > button {
+    background: linear-gradient(135deg, #2563EB, #7C3AED);
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    border: 1px solid #93C5FD !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: 0.2s;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #7C3AED, #EC4899);
+    border: 1px solid #FFFFFF !important;
+    transform: scale(1.02);
+}
+
+/* Thanh tiến trình */
+.stProgress > div > div > div > div {
+    background-color: #38BDF8 !important;
+}
+
+/* Làm chữ phụ dễ đọc hơn */
+small, .stCaption {
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+}
+
+/* Giữ chữ dễ đọc trên nền tối */
+[data-testid="stAppViewContainer"] {
+    color: #FFFFFF;
+}
+</style>
+""", unsafe_allow_html=True)
+```
 st.set_page_config(
     page_title="Math Challenge",
     page_icon="🧠",
