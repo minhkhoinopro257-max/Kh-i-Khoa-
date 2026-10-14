@@ -117,8 +117,13 @@ h1, h2, h3 {
 """, unsafe_allow_html=True)
 
 # ===== CODE GAME CỦA BẠN ĐẶT TIẾP Ở DƯỚI =====
-```
+import streamlit as st
 
+st.markdown("""
+<style>
+...
+</style>
+""", unsafe_allow_html=True)
 # =========================
 # NGÂN HÀNG CÂU HỎI
 # =========================
