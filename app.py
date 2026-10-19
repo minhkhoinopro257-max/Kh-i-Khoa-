@@ -613,5 +613,124 @@ else:
         "Không tìm thấy file nhạc. "
         "Hãy kiểm tra tên file và thư mục chứa app.py."
     )
+# ===== CSS LÀM CHỮ TO, ĐẬM, DỄ ĐỌC =====
+st.markdown("""
+<style>
+/* Chữ toàn trang */
+.stApp {
+    color: #FFFFFF;
+    font-size: 20px !important;
+}
 
+/* Tiêu đề chính */
+h1 {
+    font-size: 42px !important;
+    font-weight: 900 !important;
+    color: #FFFFFF !important;
+    text-shadow: 3px 3px 5px #000000 !important;
+}
+
+/* Tiêu đề phụ */
+h2 {
+    font-size: 32px !important;
+    font-weight: 900 !important;
+    color: #FFFFFF !important;
+    text-shadow: 2px 2px 5px #000000 !important;
+}
+
+h3 {
+    font-size: 26px !important;
+    font-weight: 900 !important;
+    color: #FFFFFF !important;
+    text-shadow: 2px 2px 4px #000000 !important;
+}
+
+/* Chữ nội dung và câu hỏi */
+.stMarkdown p,
+.stMarkdown li,
+[data-testid="stCaptionContainer"] {
+    color: #FFFFFF !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+    line-height: 1.7 !important;
+    text-shadow: 1px 1px 4px #000000 !important;
+}
+
+/* Nhãn cấp độ, nhãn đáp án */
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] p {
+    color: #FFFFFF !important;
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    text-shadow: 2px 2px 4px #000000 !important;
+}
+
+/* Đáp án trắc nghiệm */
+[data-testid="stRadio"] label,
+[data-testid="stRadio"] label p {
+    color: #FFFFFF !important;
+    font-size: 21px !important;
+    font-weight: 800 !important;
+    line-height: 1.6 !important;
+    text-shadow: 1px 1px 3px #000000 !important;
+}
+
+/* Khung đáp án */
+[data-testid="stRadio"] > div {
+    background: rgba(10, 15, 30, 0.92) !important;
+    border: 2px solid #60A5FA !important;
+    border-radius: 14px !important;
+    padding: 16px 20px !important;
+}
+
+/* Ô chọn cấp độ */
+[data-testid="stSelectbox"] div[data-baseweb="select"] {
+    background-color: #111827 !important;
+    border: 2px solid #60A5FA !important;
+    border-radius: 12px !important;
+}
+
+[data-testid="stSelectbox"] div[data-baseweb="select"] * {
+    color: #FFFFFF !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+}
+
+/* Nút bấm */
+.stButton > button {
+    background: linear-gradient(135deg, #2563EB, #7C3AED) !important;
+    color: #FFFFFF !important;
+    font-size: 21px !important;
+    font-weight: 900 !important;
+    min-height: 55px !important;
+    padding: 12px 20px !important;
+    border: 2px solid #93C5FD !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.stButton > button p {
+    font-size: 21px !important;
+    font-weight: 900 !important;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #0891B2, #7C3AED) !important;
+    border: 2px solid #FFFFFF !important;
+}
+
+/* Ô nhập văn bản */
+.stTextInput input {
+    background-color: #0F172A !important;
+    color: #FFFFFF !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+    min-height: 50px !important;
+    border: 2px solid #60A5FA !important;
+    border-radius: 12px !important;
+}
+
+/* Thông báo đúng, sai, giải thích */
+[data-testid="stAlert"] {
+    background-color: rgba(15, 23
 
