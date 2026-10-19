@@ -733,4 +733,10 @@ h3 {
 /* Thông báo đúng, sai, giải thích */
 [data-testid="stAlert"] {
     background-color: rgba(15, 23
+import streamlit as st
 
+st.markdown("""
+<style>
+...
+</style>
+""", unsafe_allow_html=True)
