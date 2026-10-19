@@ -1,160 +1,160 @@
-            "options": ["72", "78", "84", "90"],
-            "answer": "84",
-            "explain": "Nửa chu vi p = 21. Theo Heron: S = √[21(21-13)(21-14)(21-15)] = √7056 = 84.",
-        },
-    ],
-}
+import base64
+import json
+import random
+from pathlib import Path
+
+import streamlit as st
+import streamlit.components.v1 as components
 
 # =========================================================
-# TRẠNG THÁI GAME
+# CẤU HÌNH ỨNG DỤNG
 # =========================================================
-if "level" not in st.session_state:
-    st.session_state.level = "Dễ"
-if "questions" not in st.session_state:
-    st.session_state.questions = random.sample(QUESTIONS["Dễ"], 5)
-if "index" not in st.session_state:
-    st.session_state.index = 0
-if "score" not in st.session_state:
-    st.session_state.score = 0
-if "answered" not in st.session_state:
-    st.session_state.answered = False
-if "finished" not in st.session_state:
-    st.session_state.finished = False
-if "last_correct" not in st.session_state:
-    st.session_state.last_correct = False
-
-# =========================================================
-# TIÊU ĐỀ VÀ CHỌN CẤP ĐỘ
-# =========================================================
-st.title("🎮 GAME THỬ THÁCH TOÁN HỌC")
-st.markdown("### Chọn đáp án đúng để tích lũy điểm số!")
-
-levels = ["Dễ", "Vừa", "Khó"]
-level = st.selectbox(
-    "🎯 CHỌN CẤP ĐỘ",
-    levels,
-    index=levels.index(st.session_state.level),
+BASE_DIR = Path(__file__).resolve().parent
+st.set_page_config(
+    page_title="Game Toán học",
+    page_icon="🎮",
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
 
-if level != st.session_state.level:
-    st.session_state.level = level
-    st.session_state.questions = random.sample(
-        QUESTIONS[level], min(5, len(QUESTIONS[level]))
-    )
-    st.session_state.index = 0
-    st.session_state.score = 0
-    st.session_state.answered = False
-    st.session_state.finished = False
-    st.session_state.last_correct = False
-    st.rerun()
-
-st.divider()
-
 # =========================================================
-# HIỂN THỊ CÂU HỎI
+# CSS: CHỮ TO, ĐẬM, TƯƠNG PHẢN CAO
 # =========================================================
-if not st.session_state.finished:
-    questions = st.session_state.questions
-    index = st.session_state.index
-    total_questions = len(questions)
-    current_question = questions[index]
+st.markdown(
+    """
+    <style>
+    /* Cỡ chữ mặc định */
+    html, body, [class*="css"] {
+        font-size: 20px;
+    }
 
-    st.progress((index + 1) / total_questions)
-    st.markdown(f"### 📘 CÂU {index + 1}/{total_questions}")
-    st.markdown(f"## {current_question['q']}")
+    .stApp,
+    [data-testid="stAppViewContainer"] {
+        color: #FFFFFF !important;
+    }
 
-    choice = st.radio(
-        "👇 CHỌN ĐÁP ÁN CỦA BẠN:",
-        current_question["options"],
-        key=f"choice_{st.session_state.level}_{index}",
-        disabled=st.session_state.answered,
-    )
+    /* Tiêu đề */
+    h1 {
+        color: #FFFFFF !important;
+        font-size: 44px !important;
+        font-weight: 900 !important;
+        line-height: 1.25 !important;
+        text-shadow: 3px 3px 6px #000000, 0 0 12px #000000 !important;
+    }
 
-    if not st.session_state.answered:
-        if st.button("✅ KIỂM TRA ĐÁP ÁN", use_container_width=True):
-            is_correct = choice == current_question["answer"]
-            st.session_state.answered = True
-            st.session_state.last_correct = is_correct
-            if is_correct:
-                st.session_state.score += 1
-            st.rerun()
+    h2 {
+        color: #FFFFFF !important;
+        font-size: 34px !important;
+        font-weight: 900 !important;
+        line-height: 1.35 !important;
+        text-shadow: 2px 2px 5px #000000, 0 0 8px #000000 !important;
+    }
 
-    if st.session_state.answered:
-        if st.session_state.last_correct:
-            st.success("🎉 CHÍNH XÁC! Bạn được cộng 1 điểm.")
-        else:
-            st.error("❌ Chưa chính xác! Đừng nản chí, hãy xem lời giải nhé.")
+    h3 {
+        color: #FFFFFF !important;
+        font-size: 28px !important;
+        font-weight: 900 !important;
+        text-shadow: 2px 2px 5px #000000 !important;
+    }
 
-        st.info(
-            f"**ĐÁP ÁN ĐÚNG:** {current_question['answer']}\n\n"
-            f"**GIẢI THÍCH:** {current_question['explain']}"
-        )
+    /* Nội dung chữ */
+    .stMarkdown p,
+    .stMarkdown li,
+    [data-testid="stCaptionContainer"] {
+        color: #FFFFFF !important;
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        line-height: 1.7 !important;
+        text-shadow: 1px 1px 4px #000000 !important;
+    }
 
-        if index + 1 < total_questions:
-            if st.button("➡️ CÂU TIẾP THEO", use_container_width=True):
-                st.session_state.index += 1
-                st.session_state.answered = False
-                st.session_state.last_correct = False
-                st.rerun()
-        else:
-            if st.button("🏆 XEM KẾT QUẢ", use_container_width=True):
-                st.session_state.finished = True
-                st.rerun()
+    /* Nhãn các widget */
+    [data-testid="stWidgetLabel"],
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] label {
+        color: #FFFFFF !important;
+        font-size: 23px !important;
+        font-weight: 900 !important;
+        text-shadow: 2px 2px 4px #000000 !important;
+    }
 
-# =========================================================
-# MÀN HÌNH KẾT QUẢ
-# =========================================================
-else:
-    total = len(st.session_state.questions)
-    score = st.session_state.score
+    /* Câu trả lời trắc nghiệm */
+    [data-testid="stRadio"] label,
+    [data-testid="stRadio"] label p {
+        color: #FFFFFF !important;
+        font-size: 22px !important;
+        font-weight: 800 !important;
+        line-height: 1.6 !important;
+        text-shadow: 1px 1px 3px #000000 !important;
+    }
 
-    st.balloons()
-    st.title("🏆 KẾT QUẢ CỦA BẠN")
-    st.metric("🎯 SỐ CÂU TRẢ LỜI ĐÚNG", f"{score}/{total}")
-    st.markdown(f"### 📚 CẤP ĐỘ: {st.session_state.level}")
+    [data-testid="stRadio"] > div {
+        gap: 12px !important;
+        padding: 18px 20px !important;
+        background: rgba(10, 15, 30, 0.94) !important;
+        border: 2px solid #60A5FA !important;
+        border-radius: 16px !important;
+    }
 
-    if score == total:
-        st.success("🌟 XUẤT SẮC! Bạn đã trả lời đúng tất cả câu hỏi!")
-    elif score >= total * 0.6:
-        st.info("👏 Làm tốt lắm! Hãy tiếp tục luyện tập nhé.")
-    else:
-        st.warning("💪 Bạn hãy xem lại lời giải rồi thử sức thêm lần nữa nhé.")
+    /* Hộp chọn cấp độ */
+    [data-testid="stSelectbox"] div[data-baseweb="select"] {
+        min-height: 56px !important;
+        background-color: #111827 !important;
+        border: 2px solid #60A5FA !important;
+        border-radius: 12px !important;
+    }
 
-    if st.button("🔄 CHƠI LẠI", use_container_width=True):
-        st.session_state.questions = random.sample(
-            QUESTIONS[st.session_state.level],
-            min(5, len(QUESTIONS[st.session_state.level])),
-        )
-        st.session_state.index = 0
-        st.session_state.score = 0
-        st.session_state.answered = False
-        st.session_state.finished = False
-        st.session_state.last_correct = False
-        st.rerun()
+    [data-testid="stSelectbox"] div[data-baseweb="select"] * {
+        color: #FFFFFF !important;
+        font-size: 21px !important;
+        font-weight: 800 !important;
+    }
 
-st.divider()
+    /* Nút bấm */
+    .stButton > button {
+        min-height: 60px !important;
+        padding: 12px 22px !important;
+        background: linear-gradient(135deg, #2563EB, #7C3AED) !important;
+        color: #FFFFFF !important;
+        font-size: 22px !important;
+        font-weight: 900 !important;
+        border: 2px solid #93C5FD !important;
+        border-radius: 14px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55) !important;
+        transition: all 0.2s ease !important;
+    }
 
-# =========================================================
-# TRÌNH PHÁT NHẠC NỀN
-# Đặt các file nhạc cạnh app.py:
-# nhac_nen.m4a, nhac1.m4a, nhac2.m4a, nhac3.m4a
-# =========================================================
-MUSIC_FILES = ["nhac_nen.m4a", "nhac1.m4a", "nhac2.m4a", "nhac3.m4a"]
-playlist = []
+    .stButton > button p {
+        color: #FFFFFF !important;
+        font-size: 22px !important;
+        font-weight: 900 !important;
+    }
 
-for filename in MUSIC_FILES:
-    file_path = BASE_DIR / filename
-    if file_path.is_file():
-        try:
-            audio_base64 = base64.b64encode(file_path.read_bytes()).decode("utf-8")
-            playlist.append(
-                {
-                    "name": filename,
-                    "src": "data:audio/mp4;base64," + audio_base64,
-                }
-            )
-        except OSError:
-            st.warning(f"Không đọc được file nhạc: {filename}")
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #0891B2, #7C3AED) !important;
+        border: 2px solid #FFFFFF !important;
+        transform: translateY(-2px);
+    }
 
-st.markdown("## 🎵 TRÌNH PHÁT NHẠC")
-if playlist:
+    /* Thanh tiến trình */
+    [data-testid="stProgressBar"] > div > div > div {
+        background: #38BDF8 !important;
+    }
+
+    /* Ô nhập chữ */
+    .stTextInput input,
+    .stTextArea textarea {
+        min-height: 52px !important;
+        background-color: rgba(15, 23, 42, 0.97) !important;
+        color: #FFFFFF !important;
+        font-size: 21px !important;
+        font-weight: 700 !important;
+        border: 2px solid #60A5FA !important;
+        border-radius: 12px !important;
+    }
+
+    /* Thông báo đúng/sai và lời giải */
+    [data-testid="stAlert"] {
+        background-color: rgba(15, 23, 42, 0.97) !important;
+        border-radius: 14px !important;
+        border: 1px solid rgba(147, 197, 253, 0.7) !important;
